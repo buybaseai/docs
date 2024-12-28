@@ -1,0 +1,42 @@
+---
+title: 'Create User'
+description: 'Create a new user for your app.'
+api: "POST /users/create"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+### Body
+
+<ParamField body="app_id" type="string" required>
+  The unique identifier for the app.
+</ParamField>
+
+<ParamField body="developer_id" type="string" required>
+  The unique identifier for the developer.
+</ParamField>
+
+### Response
+
+<ResponseField name="message" type="string">
+  A message indicating the result of the user creation operation.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the user creation operation.
+</ResponseField>
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "User created successfully",
+  "code": "USER_CREATED"
+}
+```
+
+</ResponseExample>

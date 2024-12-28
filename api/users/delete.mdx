@@ -1,0 +1,42 @@
+---
+title: "Delete User"
+description: 'Delete a user from your app.'
+api: "DELETE /users/delete"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="user_id" type="string" required>
+  The unique identifier for the user.
+</ParamField>
+
+<ParamField query="app_id" type="string" required>
+  The unique identifier for the app.
+</ParamField>
+
+### Response
+
+<ResponseField name="message" type="string">
+  A message indicating the result of the user deletion operation. Possible value: `User deleted successfully`.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the user deletion operation. Possible value: `USER_DELETED`.
+</ResponseField>
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "User deleted successfully",
+  "code": "USER_DELETED"
+}
+```
+
+</ResponseExample>

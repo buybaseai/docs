@@ -1,0 +1,31 @@
+---
+title: Response Codes
+description: 'Buybase response codes.'
+icon: "server"
+---
+
+Below are the response codes used in the API:
+
+- **200 OK**
+  - `PURCHASE_SUCCESS`: Purchase successful
+  - `SEARCH_SUCCESS`: Search completed successfully
+  - `USER_RESPONSE`: User data retrieved successfully
+  - `USER_DELETED`: User deleted successfully
+  - `BUYBASE_LINK`: Buybase link created successfully
+  - `APP_RESPONSE`: App data retrieved successfully
+
+- **400 Bad Request**
+  - `BAD_REQUEST_ERROR`: Bad request due to validation issues
+  - `DEVELOPER_NOT_FOUND`: Developer not found
+  - `APP_NOT_FOUND`: App not found
+  - `USER_NOT_FOUND`: User not found
+  - `PAYMENT_METHOD_NOT_FOUND`: Payment method not found
+  - `SESSION_NOT_FOUND`: Session not found
+  - `EXPIRED_SESSION`: Session expired
+  - `INSUFFICIENT_STOCK`: Insufficient stock
+
+- **401 Unauthorized**
+  - `AUTH_MISSING`: No API key provided
+
+- **500 Internal Server Error**
+  - `INTERNAL_ERROR`: An error occurred during processing

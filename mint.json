@@ -1,91 +1,107 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Buybase",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/buybase-light.svg",
+    "light": "/logo/buybase-dark.svg"
   },
   "favicon": "/favicon.svg",
+  "rounded": "default",
+  "font": {
+    "headings": {
+      "family": "Geist"
+    },
+    "body": {
+      "family": "Geist"
+    }
+  },
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#2DC852",
+    "light": "#A7A79C",
+    "dark": "#2AB74B",
+    "background": {
+      "dark": "#1E1E1E",
+      "light": "#FCFCF7"
+    },
     "anchors": {
       "from": "#0D9373",
       "to": "#07C983"
     }
   },
+  "api": {
+    "baseUrl": "https://api.buybase.ai"
+  },
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "name": "Community",
+      "url": "https://discord.gg/buybase"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://dashboard.buybase.ai"
   },
   "tabs": [
     {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "name": "Docs",
+      "url": "docs"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "name": "API",
+      "url": "api"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "General",
+      "pages": ["/docs/welcome"]
+    },
+    {
+      "group": "How To",
+      "icon": "books",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "/docs/how-to/overview",
+        "/docs/how-to/steps/create-user",
+        "/docs/how-to/steps/link-user",
+        "/docs/how-to/steps/search-products"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Reference",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "/docs/use-cases",
+        "/docs/supported-platforms",
+        "/docs/security",
+        "/docs/response-codes"
       ]
     },
     {
-      "group": "API Documentation",
-      "pages": [
-        "api-reference/introduction"
-      ]
+      "group": "Misc",
+      "pages": ["/docs/support", "/docs/faqs"]
     },
     {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
-      ]
+      "group": "Buy",
+      "pages": ["/api/buy-item/post"]
+    },
+    {
+      "group": "Search",
+      "pages": ["/api/search/post"]
+    },
+    {
+      "group": "Users",
+      "pages": ["/api/users/create", "/api/users/get", "/api/users/delete"]
+    },
+    {
+      "group": "Link Users",
+      "pages": ["/api/link/get"]
+    },
+    {
+      "group": "Apps",
+      "pages": ["/api/apps/get"]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
+    "x": "https://x.com/buybaseai",
+    "linkedin": "https://linkedin.com/company/buybaseai"
   }
 }

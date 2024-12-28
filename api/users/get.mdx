@@ -1,0 +1,47 @@
+---
+title: 'Get User'
+description: 'Retrieve user details for a specific app.'
+api: "GET /users/get"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="user_id" type="string" required>
+  The unique identifier for the user.
+</ParamField>
+
+<ParamField query="app_id" type="string" required>
+  The unique identifier for the app.
+</ParamField>
+
+### Response
+
+<ResponseField name="user" type="object">
+  The user details for the specified app.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the user retrieval operation. Possible value: `USER_RESPONSE`.
+</ResponseField>
+
+<ResponseExample>
+
+```json Response
+{
+  "user": {
+    "id": "user_1234567890abcdef",
+    "app_id": "app_1234567890abcdef",
+    "developer_id": "dev_1234567890abcdef",
+
+  },
+  "code": "USER_RESPONSE"
+}
+```
+
+</ResponseExample>

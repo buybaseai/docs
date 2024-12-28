@@ -1,0 +1,102 @@
+---
+title: "Search Item"
+description: 'Search for items on e-commerce platforms.'
+api: "GET /search"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="q" type="string" required>
+  The search query. Example: "Apple Macbook Pro 16 Inch 2024"
+</ParamField>
+
+<ParamField query="platform" type="string" required>
+  Sort the search results by the specified criteria. Currently we only support `amazon`.
+</ParamField>
+        
+<ParamField query="price_min" type="integer">
+  Minimum price filter for the search results. Must be at least 1.
+</ParamField>
+
+<ParamField query="price_max" type="integer">
+  Maximum price filter for the search results. Must be at least 1.
+</ParamField>
+
+<ParamField query="sort_by" type="string">
+  Sort the search results by the specified criteria. Options include:
+  - `price_low_to_high`
+  - `price_high_to_low`
+  - `best_sellers`
+  - `featured`
+  - `average_review`
+  - `newest_arrivals`
+</ParamField>
+
+### Response
+
+<ResponseField name="results" type="array">
+  An array of product details, each containing:
+  - `title`: The product title.
+  - `price`: The product price.
+  - `rating`: The product rating.
+  - `brand`: The brand of the product.
+  - `feature_bullets`: Key features of the product.
+  - `attributes`: Additional attributes of the product.
+  - `variants`: Available variants of the product.
+  - `main_image`: The main image of the product.
+  - `url`: The product URL.
+  - `availability`: The availability of the product.
+  - `max_order_qty`: The maximum order quantity of the product.
+  - `images`: Images of the product.
+  - `reviews_count`: Number of reviews.
+  - `reviews`: An array of reviews with details like rating, title, text, date, profile, helpful votes, and verified purchase status.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the search operation. Possible value: `SEARCH_SUCCESS_RESPONSE`.
+</ResponseField>
+
+<ResponseExample>
+
+```json Response
+{
+  "results": [
+    {
+      "title": "Sample Product",
+      "price": 299.99,
+      "rating": 4.5,
+      "brand": "Sample Brand",
+      "feature_bullets": ["Feature 1", "Feature 2"],
+      "attributes": {"Color": "Black", "Size": "Medium"},
+      "variants": {"Color": ["Black", "White"], "Size": ["Small", "Medium"]},
+      "main_image": "https://example.com/main-image.jpg",
+      "url": "https://example.com/product",
+      "availability": "In Stock",
+      "max_order_qty": 10,
+      "images": ["https://example.com/image1.jpg"],
+      "reviews_count": 150,
+      "reviews": [
+        {
+          "rating": 5,
+          "title": "Great product",
+          "text": "I loved it!",
+          "date": "2023-10-01",
+          "profile": "John Doe",
+          "helpful_votes": 10,
+          "verified_purchase": true
+        }
+      ]
+    }
+  ],
+  "code": "SEARCH_SUCCESS"
+}
+```
+
+</ResponseExample>
+
