@@ -31,12 +31,11 @@ api: "POST /buy"
 <ParamField body="product_url" type="string" required>
   The URL of the product to purchase. Must be a valid URL product page URL from one of our <a href="/docs/supported-platforms">supported platforms</a>.
 
-Example Amazon Product URL:
+  Example Amazon Product URL:
 
-```javascript
-"https://www.amazon.com/example-product-title/dp/B0D1XD1ZV3"
-```
-
+  ```javascript
+  "https://www.amazon.com/example-product-title/dp/B0D1XD1ZV3"
+  ```
 </ParamField>
 
 ### Response
@@ -50,12 +49,10 @@ Example Amazon Product URL:
 </ResponseField>
 
 <ResponseExample>
-
-```json Response
-{
-  "message": "Purchase successful",
-  "code": "PURCHASE_SUCCESS"
-}
-```
-
+  ```json Response
+  {
+    "message": "Purchase successful",
+    "code": "PURCHASE_SUCCESS"
+  }
+  ```
 </ResponseExample>

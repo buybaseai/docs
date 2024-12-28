@@ -85,7 +85,7 @@
     },
     {
       "group": "Search",
-      "pages": ["/api/search/post"]
+      "pages": ["/api/search/get"]
     },
     {
       "group": "Users",
