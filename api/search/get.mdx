@@ -19,7 +19,7 @@ api: "GET /search"
 <ParamField query="platform" type="string" required>
   The e-commerce platform to search on. Currently, we only support `amazon`.
 </ParamField>
-        
+
 <ParamField query="price_min" type="integer">
   Minimum price filter for the search results. Must be at least 1.
 </ParamField>
@@ -30,33 +30,35 @@ api: "GET /search"
 
 <ParamField query="sort_by" type="string">
   Sort the search results by the specified criteria. Options include:
-  - `price_low_to_high`
-  - `price_high_to_low`
-  - `best_sellers`
-  - `featured`
-  - `average_review`
-  - `newest_arrivals`
+  
+  * `price_low_to_high`
+  * `price_high_to_low`
+  * `best_sellers`
+  * `featured`
+  * `average_review`
+  * `newest_arrivals`
 </ParamField>
 
 ### Response
 
 <ResponseField name="results" type="array">
   An array of product details, each containing:
-  - `title`: The product title.
-  - `price`: The product price.
-  - `rating`: The product rating.
-  - `brand`: The brand of the product.
-  - `feature_bullets`: Key features of the product.
-  - `attributes`: Additional attributes of the product.
-  - `variant_combinations`: Combinations of product variants with dimensions and ASINs.
-  - `dimensions`: A map of available dimensions and their values.
-  - `main_image`: The main image of the product.
-  - `url`: The product URL.
-  - `availability`: The availability of the product.
-  - `max_order_qty`: The maximum order quantity of the product.
-  - `images`: Images of the product.
-  - `reviews_count`: Number of reviews.
-  - `reviews`: An array of reviews with details like rating, title, text, date, profile, helpful votes, and verified purchase status.
+
+  * `title`: The product title.
+  * `price`: The product price.
+  * `rating`: The product rating.
+  * `brand`: The brand of the product.
+  * `feature_bullets`: Key features of the product.
+  * `attributes`: Additional attributes of the product.
+  * `variant_combinations`: Combinations of product variants & product ids of combinations.
+  * `dimensions`: A map of available variants and their values.
+  * `main_image`: The main image of the product.
+  * `url`: The product URL.
+  * `availability`: The availability of the product.
+  * `max_order_qty`: The maximum order quantity of the product.
+  * `images`: Images of the product.
+  * `reviews_count`: Number of reviews.
+  * `reviews`: An array of reviews with details like rating, title, text, date, profile, helpful votes, and verified purchase status.
 </ResponseField>
 
 <ResponseField name="code" type="string">
@@ -64,47 +66,44 @@ api: "GET /search"
 </ResponseField>
 
 <ResponseExample>
-
-```json Response
-{
-  "results": [
-    {
-      "title": "Sample Product",
-      "price": 299.99,
-      "rating": 4.5,
-      "brand": "Sample Brand",
-      "feature_bullets": ["Feature 1", "Feature 2"],
-      "attributes": {"Color": "Black", "Size": "Medium"},
-      "variant_combinations": [
-        {
-          "dimensions": [{"name": "Size", "value": "7.5"}, {"name": "Color", "value": "Red"}],
-          "asin": "B123"
-        }
-      ],
-      "dimensions": {"Size": ["7.5", "9"], "Color": ["Red", "Black"]},
-      "main_image": "https://example.com/main-image.jpg",
-      "url": "https://example.com/product",
-      "availability": "In Stock",
-      "max_order_qty": 10,
-      "images": ["https://example.com/image1.jpg"],
-      "reviews_count": 150,
-      "reviews": [
-        {
-          "rating": 5,
-          "title": "Great product",
-          "text": "I loved it!",
-          "date": "2023-10-01",
-          "profile": "John Doe",
-          "helpful_votes": 10,
-          "verified_purchase": true
-        }
-      ]
-      ...
-    }
-  ],
-  "code": "SEARCH_SUCCESS"
-}
-```
-
+  ```json Response
+  {
+    "results": [
+      {
+        "title": "Sample Product",
+        "price": 299.99,
+        "rating": 4.5,
+        "brand": "Sample Brand",
+        "feature_bullets": ["Feature 1", "Feature 2"],
+        "attributes": {"Color": "Black", "Size": "Medium"},
+        "variant_combinations": [
+          {
+            "dimensions": [{"name": "Size", "value": "7.5"}, {"name": "Color", "value": "Red"}],
+            "asin": "B123"
+          }
+        ],
+        "dimensions": {"Size": ["7.5", "9"], "Color": ["Red", "Black"]},
+        "main_image": "https://example.com/main-image.jpg",
+        "url": "https://example.com/product",
+        "availability": "In Stock",
+        "max_order_qty": 10,
+        "images": ["https://example.com/image1.jpg"],
+        "reviews_count": 150,
+        "reviews": [
+          {
+            "rating": 5,
+            "title": "Great product",
+            "text": "I loved it!",
+            "date": "2023-10-01",
+            "profile": "John Doe",
+            "helpful_votes": 10,
+            "verified_purchase": true
+          }
+        ]
+        ...
+      }
+    ],
+    "code": "SEARCH_SUCCESS"
+  }
+  ```
 </ResponseExample>
-
