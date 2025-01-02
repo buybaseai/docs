@@ -102,6 +102,10 @@
     {
       "group": "Apps",
       "pages": ["/api/apps/get"]
+    },
+    {
+      "group": "Changelog",
+      "pages": ["/changelog/overview"]
     }
   ],
   "footerSocials": {
