@@ -80,20 +80,20 @@
       "pages": ["/docs/support", "/docs/faqs"]
     },
     {
-      "group": "Buy",
-      "pages": ["/api/buy-item/post"]
+      "group": "Search",
+      "pages": ["/api/search/get"]
     },
     {
       "group": "Search",
       "pages": ["/api/search/get"]
     },
     {
-      "group": "Users",
-      "pages": ["/api/users/create", "/api/users/get", "/api/users/delete"]
+      "group": "Buy",
+      "pages": ["/api/buy/post"]
     },
     {
-      "group": "Link Users",
-      "pages": ["/api/link/get"]
+      "group": "Users",
+      "pages": ["/api/users/post", "/api/users/get", "/api/users/delete"]
     },
     {
       "group": "Apps",

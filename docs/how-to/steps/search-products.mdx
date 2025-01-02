@@ -75,7 +75,7 @@ const messages = [
   },
 ];
 
-// Example completion.
+// Example completion
 async function getChatCompletion() {
   try {
     const response = await openai.chat.completions.create({
@@ -93,124 +93,102 @@ async function getChatCompletion() {
 const response = getChatCompletion();
 ```
 
-## Handling Tool Call
-
-`getChatCompletion()` will return a function call like the below:
-
-```javascript
-const response = {
-  choices: [
-    {
-      message: {
-        tool_calls: [
-          {
-            id: "call_12345xyz",
-            type: "function",
-            function: {
-              name: "search_tool",
-              arguments:
-                "{'q':'whey protein powder', 'platform':'amazon', 'price_max': 50}",
-            },
-          },
-        ],
-      },
-    },
-  ],
-};
-```
-
-You application logic may include an if statement to check if the tool call is present.
-See [Buybase Search API](/api/search) for more information.
-
-```javascript
-if (response.choices[0].message.tool_calls[0].function.name === "search_tool") {
-  const search_results = // Make a GET request to `https://api.buybase.ai/search`
-}
-```
-
-## Submitting Function Call Result
-For the sake of this example, we're going to similute a response from the `/search` endpoint.
-```javascript
-// Simulated response from GET request to `https://api.buybase.ai/search`
-const search_results = [
-    {
-      "title": "Nike mens Pegasus 39 Road Running",
-      "rating": 4.5,
-      "feature_bullets": [
-        "Nike Air Zoom Pegasus 39 Men's Road Running Shoes"
-      ],
-      "attributes": [
-       ...
-      ],
-      "main_image": "https://m.media-amazon.com/images/I/51Cb+UURpLL.jpg",
-      "images": [
-       ...
-      ],
-      "dimensions": {
-       ...
-      },
-      "url": "https://www.amazon.com/Nike-mens-Pegasus-Road-Running/dp/B0CPT8FWJV",
-      "availability": "Only 1 left in stock - order soon.",
-      "max_order_qty": 3,
-      "reviews_count": 1611,
-      "reviews": [
-       ...
-      ]
-    },
-    ...
-];
-
-const function_call_result_message = {
-  role: "tool",
-  content: JSON.stringify({
-    search_results,
-  }),
-  tool_call_id: response.choices[0].message.tool_calls[0].id,
-};
-
-const completion_payload = {
-  model: "gpt-4o",
-  messages: [
-      {
-        role: "system",
-        content:
-          "You are a helpful assistant to help users find products to buy online.",
-      },
-      {
-        role: "user",
-        content:
-          "Need some new nike running shoes. Can you check Amazon for me?",
-      },
-      response.choices[0].message,
-      function_call_result_message,
-  ],
-};
-
-const final_response = await openai.chat.completions.create({
-  model: completion_payload.model,
-  messages: completion_payload.messages,
-});
-
-console.log(final_response);
-```
-
 ## Displaying Search Results & Checkout
 
 Map the function call result to a search result card component to provide users with a visual and interactive way to browse and checkout a product.
 Below is a basic example in React and [React Hook Form](https://react-hook-form.com/) without any styling:
 
 <Tabs>
-  <Tab title="SearchResults.jsx">
+  <Tab title="Conversation.jsx">
       ```jsx
-      function SearchResults({ results }) {
-        return (
-          <div className="search-results">
-            {results.map((product) => (
-              <SearchResultCard key={product.title} product={product} />
-            ))}
-          </div>
-        );
-      }
+        import React, { useState } from 'react';
+        import { useForm } from 'react-hook-form';
+        import SearchResults from './SearchResults';
+
+        function Conversation() {
+          const [messages, setMessages] = useState([
+            { role: 'system', content: 'You are a helpful assistant.' },
+            { role: 'user', content: 'Need some new nike running shoes. Can you check Amazon for me?' },
+          ]);
+
+          const [searchResults, setSearchResults] = useState(null);
+
+          // Initialize react-hook-form
+          const { register, handleSubmit, reset } = useForm();
+
+          const handleUserMessage = async (data) => {
+            const message = data.userMessage;
+
+            // Append user message to conversation
+            setMessages((prevMessages) => [...prevMessages, { role: 'user', content: message }]);
+
+            // Simulate API call to OpenAI
+            const response = await getChatCompletion(message);
+
+            // Check for tool call and fetch search results if present
+            if (response.tool_calls && response.tool_calls[0].function.name === "search_tool") {
+              const toolCall = response.tool_calls[0];
+              const searchParams = JSON.parse(toolCall.function.arguments);
+              try {
+                const searchResults = await fetchSearchResults(searchParams);
+                setMessages((prevMessages) => [
+                  ...prevMessages,
+                  { role: 'assistant', content: 'Here are some products I found for you.' },
+                  { role: 'search_results', data: searchResults },
+                ]);
+              } catch (error) {
+                console.error("Error fetching search results:", error);
+              }
+            }
+            // Reset the input field
+            reset();
+          };
+
+          const getChatCompletion = async (message) => {
+            // Simulate OpenAI API call
+            // This function should return the tool call response
+            return {
+              tool_calls: [
+                {
+                  function: {
+                    name: 'search_tool',
+                    arguments: "{'q':'nike running shoes', 'platform':'amazon'}",
+                  },
+                },
+              ],
+            };
+          };
+
+          const fetchSearchResults = async (searchParams) => {
+            // Simulate fetching search results from Buybase
+            const response = await fetch(`https://api.buybase.ai/search?q=${searchParams.q}&platform=${searchParams.platform}`);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          };
+
+          return (
+            <div className="conversation">
+              {messages.map((msg, index) => (
+                <div key={index} className={`message ${msg.role}`}>
+                  {msg.content}
+                  {msg.role === 'search_results' && <SearchResults results={msg.data} />}
+                </div>
+              ))}
+              <form onSubmit={handleSubmit(handleUserMessage)}>
+                <input
+                  type="text"
+                  placeholder="Type a message..."
+                  {...register('userMessage', { required: true })}
+                />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          );
+        }
+
+        export default Conversation;
       ```
   </Tab>
   <Tab title="SearchResultCard.jsx">
@@ -298,46 +276,48 @@ Below is a basic example in React and [React Hook Form](https://react-hook-form.
   </Tab>
   <Tab title="CheckoutModal.jsx">
       ```jsx
+      import { useState, useEffect } from "react";
       import { useForm } from "react-hook-form";
 
       function CheckoutModal({ product, selectedDimension, onClose }) {
-        // The fee our platform charges the user (0.25%) for purchasing through our platform.
-        // Read more at https://buybase.ai/pricing
-        const buyBaseFee = 0.025;
+        const [summary, setSummary] = useState(null);
+        const [loading, setLoading] = useState(false);
 
-        // Makes serverside request to /apps/get, destructures agent_fee from response.
-        const { agent_fee } = await getApp(process.env.BUYBASE_APP_ID);
-
-        // Combine platform fee + developer fee
-        const totalFeeRate = buyBaseFee + myAgentFee;
-
-        // Setup react-hook-form
-        const { register, handleSubmit, watch } = useForm({
-          defaultValues: {
-            quantity: 1,
-          },
-        });
-
-        // Watch quantity value for calculations
+        const { register, handleSubmit, watch } = useForm({ defaultValues: { quantity: 1 } });
         const quantity = watch("quantity");
+        
+        // Create summary
+        useEffect(() => {
+          const createSummary = async () => {
+            setLoading(true);
+            try {
+              // Hit '/summary/create' endpoint on your server.
+              const data = await createSummary(product.url, appId, userId, "amazon");
+              setSummary(data);
+            } catch (error) {
+              console.error("Error creating summary:", error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          createSummary();
+        }, []);
 
-        // Calculate the subtotal, fee, and total
-        const subtotal = product.price * quantity;
-        const fee = subtotal * totalFeeRate; // e.g. if totalFeeRate is 0.045 => 4.5%
-        const totalPrice = subtotal + fee;
-
-        const onSubmit = async (data) => {
+        // Handle the buy now button click
+        const onBuyNow = async (formData) => {
           try {
-            // Prepare payload with required info
             const payload = {
-              productUrl: product.url,
-              quantity: data.quantity,
-              dimension: selectedDimension,
+              selected_dimension: selectedDimension,
+              variant_combinations: product.variant_combinations,
               platform: product.platform,
-              developerId: process.env.BUYBASE_DEVELOPER_ID,
-              appId: process.env.BUYBASE_APP_ID,
+              summary_id: summary.id,
+              quantity,
+              developer_id: process.env.BUYBASE_DEVELOPER_ID,
+              app_id: process.env.BUYBASE_APP_ID,
+              // Buybase user ID of the logged in user purchasing the product. You can retrieve this from your database.
+              user_id: ** User ID **,
             };
-            // Make a POST request to `https://api.buybase.ai/buy`
+            // Hit '/buy' endpoint on your server.
             await buyNow(payload);
             onClose();
           } catch (error) {
@@ -345,63 +325,58 @@ Below is a basic example in React and [React Hook Form](https://react-hook-form.
           }
         };
 
-        // Helper to format numbers as currency
+        // Format currency to 2 decimal places
         const formatCurrency = (value) => value.toFixed(2);
 
         return (
           <div className="checkout-modal">
             <h2>Checkout</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {/* Product Info */}
-              <p>
-                <strong>Product:</strong> {product.title}
-              </p>
-              {/* Dimensions Summary */}
+            <form onSubmit={handleSubmit(onBuyNow)}>
+              <p><strong>Product:</strong> {product.title}</p>
               {Object.keys(selectedDimension).length > 0 && (
                 <p>
                   <strong>Selected Options:</strong>{" "}
-                  {Object.entries(selectedDimension)
-                    .map(([dim, val]) => `${dim}: ${val}`)
-                    .join(", ")}
+                  {Object.entries(selectedDimension).map(([dim, val]) => `${dim}: ${val}`).join(", ")}
                 </p>
               )}
-              {/* Quantity Selector */}
               <label>
                 Quantity:
                 <input
                   type="number"
                   min="1"
-                  {...register("quantity", {
-                    required: true,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
+                  {...register("quantity", { required: true, min: 1, valueAsNumber: true })}
                 />
               </label>
-              {/* Price Breakdown */}
-              <div>
-                <p>
-                  <strong>Subtotal:</strong> ${formatCurrency(subtotal)}
-                </p>
-                <p>
-                  <strong>Fees:</strong> ${formatCurrency(fee)}
-                </p>
-                <p>
-                  <strong>Total:</strong> ${formatCurrency(totalPrice)}
-                </p>
+              <div className="checkout-summary">
+                <div className="summary-item">
+                  <span>Estimated Delivery:</span>
+                  <span>{checkoutSummary?.delivery_date}</span>
+                </div>
+                <div className="summary-item">
+                  <span>Items Total:</span>
+                  <span>${formatCurrency(checkoutSummary?.unit_price * quantity || 0)}</span>
+                </div>
+                <div className="summary-item">
+                  <span>Shipping:</span>
+                  <span>${formatCurrency(checkoutSummary?.shipping_cost || 0)}</span>
+                </div>
+                <div className="summary-item">
+                  <span>Service Fee:</span>
+                  <span>${formatCurrency(checkoutSummary?.unit_fees_dollars * quantity || 0)}</span>
+                </div>
+                <div className="summary-item total">
+                  <span>Order Total:</span>
+                  <span>${formatCurrency(checkoutSummary?.unit_order_total * quantity || 0)}</span>
+                </div>
               </div>
-              {/* Action Buttons */}
-              <div>
-                <button type="submit">Buy Now</button>
-                <button type="button" onClick={onClose}>
-                  Close
-                </button>
+              <div className="button-group">
+                <button type="submit" className="primary">Buy Now</button>
+                <button type="button" onClick={onClose} className="secondary">Close</button>
               </div>
             </form>
           </div>
         );
       }
       ```
-
   </Tab>
 </Tabs>

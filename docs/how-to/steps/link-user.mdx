@@ -33,15 +33,22 @@ When making a purchase for a user without a linked session, your request will re
 }
 ```
 
-2. **Programmatically**
+Or for an expired session:
 
-Or if you'd like to generate a link programmatically, you can make a GET request to the `/link` endpoint at anytime. See [Create Link URL](/api/link) for API reference.
-
-```js
-const options = {method: 'GET', headers: {authorization: '<your-api-key>'}};
-
-fetch('https://api.buybase.ai/link?platform=amazon&user_id=userId&developer_id=developerId&app_id=appId', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+```json
+{
+  "error": "Expired Session",
+  "message": "Amazon session is expired. Please re-authenticate your user.",
+  "buybase_link": "https://link.buybase.ai?user_id=userId&developer_id=developerId&app_id=appId",
+  "code": "EXPIRED_SESSION",
+}
 ```
+
+2. **Manually**
+
+Or if you'd like to create a link manually, you can structure it with the following dynamic search params:
+
+```
+https://link.buybase.ai?platform={platform}&user_id={userId}&developer_id={developerId}&app_id={appId}
+```
+
