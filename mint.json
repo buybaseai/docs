@@ -88,10 +88,6 @@
       "pages": ["/api-reference/search/get"]
     },
     {
-      "group": "Search",
-      "pages": ["/api-reference/search/get"]
-    },
-    {
       "group": "Buy",
       "pages": ["/api-reference/buy/post"]
     },
