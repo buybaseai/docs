@@ -15,13 +15,13 @@ description: "Create a summary of prices for a singular product."
 <ParamField body="platform" type="string" required>
   The e-commerce platform. Currently supported: `amazon`
 </ParamField>
+
 <ParamField body="product_url" type="string" required>
   The URL of the product to checkout. Must be from a supported platform.
 </ParamField>
 
 <ParamField body="user_id" type="string" required>
-  The Buybase user ID to create the checkout summary for. 
-  <Info>Must already have an linked account session for the specified platform.</Info>
+  The Buybase user ID to create the checkout summary for.
 </ParamField>
 
 <ParamField body="app_id" type="string" required>
@@ -65,8 +65,8 @@ description: "Create a summary of prices for a singular product."
     </ResponseField>
 
     <ResponseField name="unit_fees_dollars" type="number">
-      Total fees in dollars per unit. 
-      <Info>(`buybase_fee_percent` + `agent_fee_percent`) * `unit_price`</Info>
+      Total fees in dollars per unit.
+      <Info>(`buybase_fee_percent` + `agent_fee_percent`) \* `unit_price`</Info>
     </ResponseField>
 
     <ResponseField name="unit_estimated_tax" type="number">
