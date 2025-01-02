@@ -97,7 +97,7 @@
     },
     {
       "group": "Users",
-      "pages": ["/api-reference/users/post", "/api/users/get", "/api/users/delete"]
+      "pages": ["/api-reference/users/post", "/api-reference/users/get", "/api-reference/users/delete"]
     },
     {
       "group": "Apps",
