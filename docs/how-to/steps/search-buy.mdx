@@ -101,154 +101,154 @@ Map the function call result to a search result card component to provide users 
 
 <Tabs>
   <Tab title="Conversation.jsx">
-    ```javascript
-      import React, { useState } from 'react';
-      import { useForm } from 'react-hook-form';
-      import SearchResults from './SearchResults';
+  ```jsx
+  import React, { useState } from 'react';
+  import { useForm } from 'react-hook-form';
+  import SearchResults from './SearchResults';
 
-      function Conversation() {
-        const [messages, setMessages] = useState([
-          { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: 'Need some new nike running shoes. Can you check Amazon for me?' },
-        ]);
+  function Conversation() {
+    const [messages, setMessages] = useState([
+      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'user', content: 'Need some new nike running shoes. Can you check Amazon for me?' },
+    ]);
 
-        const [searchResults, setSearchResults] = useState(null);
+    const [searchResults, setSearchResults] = useState(null);
 
-        // Initialize react-hook-form
-        const { register, handleSubmit, reset } = useForm();
+    // Initialize react-hook-form
+    const { register, handleSubmit, reset } = useForm();
 
-        const handleUserMessage = async (data) => {
-          const message = data.userMessage;
-          // Append user message to conversation
-          setMessages((prevMessages) => [...prevMessages, { role: 'user', content: message }]);
-          // Function makes API call to OpenAI for chat completion.
-          const response = await getChatCompletion(message);
-          // Check for tool call and fetch search results if search_tool is present.
-          if (response.tool_calls && response.tool_calls[0].function.name === "search_tool") {
-            const toolCall = response.tool_calls[0];
-            const searchParams = JSON.parse(toolCall.function.arguments);
-            try {
-              // This function should hit Buybase '/search' endpoint.
-              const searchResults = await getSearchResults(searchParams);
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                { role: 'assistant', content: 'Here are some products I found for you.' },
-                { role: 'search_results', data: searchResults },
-              ]);
-            } catch (error) {
-              console.error("Error fetching search results:", error);
-            }
-          }
-          // Reset the input field
-          reset();
-        };
-
-        return (
-          <div className="conversation">
-            {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.role}`}>
-                {msg.content}
-                {msg.role === 'search_results' && <SearchResults results={msg.data} />}
-              </div>
-            ))}
-            <form onSubmit={handleSubmit(handleUserMessage)}>
-              <input
-                type="text"
-                placeholder="Type a message..."
-                {...register('userMessage', { required: true })}
-              />
-              <button type="submit">Send</button>
-            </form>
-          </div>
-        );
+    const handleUserMessage = async (data) => {
+      const message = data.userMessage;
+      // Append user message to conversation
+      setMessages((prevMessages) => [...prevMessages, { role: 'user', content: message }]);
+      // Function makes API call to OpenAI for chat completion.
+      const response = await getChatCompletion(message);
+      // Check for tool call and fetch search results if search_tool is present.
+      if (response.tool_calls && response.tool_calls[0].function.name === "search_tool") {
+        const toolCall = response.tool_calls[0];
+        const searchParams = JSON.parse(toolCall.function.arguments);
+        try {
+          // This function should hit Buybase '/search' endpoint.
+          const searchResults = await getSearchResults(searchParams);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { role: 'assistant', content: 'Here are some products I found for you.' },
+            { role: 'search_results', data: searchResults },
+          ]);
+        } catch (error) {
+          console.error("Error fetching search results:", error);
+        }
       }
+      // Reset the input field
+      reset();
+    };
 
-      export default Conversation;
-    ```
-  </Tab>
+    return (
+      <div className="conversation">
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.role}`}>
+            {msg.content}
+            {msg.role === 'search_results' && <SearchResults results={msg.data} />}
+          </div>
+        ))}
+        <form onSubmit={handleSubmit(handleUserMessage)}>
+          <input
+            type="text"
+            placeholder="Type a message..."
+            {...register('userMessage', { required: true })}
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    );
+  }
 
-  <Tab title="SearchResultCard.jsx">
-    ```jsx
-    import { useState } from "react";
-    import { useForm } from "react-hook-form";
-    import CheckoutModal from "./CheckoutModal";
+  export default Conversation;
+  ```
+</Tab>
 
-    function SearchResultCard({ product }) {
-      // Track the user's selected values for each dimension in state using react-hook-form
-      const { register, watch, setValue, handleSubmit } = useForm({
-        defaultValues: {
-          dimensions: {},
-        },
-      });
+<Tab title="SearchResultCard.jsx">
+  ```jsx
+  import { useState } from "react";
+  import { useForm } from "react-hook-form";
+  import CheckoutModal from "./CheckoutModal";
 
-      // Control the visibility of the checkout modal
-      const [openCheckout, setOpenCheckout] = useState(false);
+  function SearchResultCard({ product }) {
+    // Track the user's selected values for each dimension in state using react-hook-form
+    const { register, watch, setValue, handleSubmit } = useForm({
+      defaultValues: {
+        dimensions: {},
+      },
+    });
 
-      // Watch the dimensions values
-      const selectedDimension = watch("dimension");
+    // Control the visibility of the checkout modal
+    const [openCheckout, setOpenCheckout] = useState(false);
 
-      // Handle dimension selection from the dropdown
-      const handleSelectChange = (dimensionName, value) => {
-        setValue(`dimension.${dimensionName}`, value);
-      };
+    // Watch the dimensions values
+    const selectedDimension = watch("dimension");
 
-      // Open the checkout modal
-      const onSubmit = () => {
-        setOpenCheckout(true);
-      };
+    // Handle dimension selection from the dropdown
+    const handleSelectChange = (dimensionName, value) => {
+      setValue(`dimension.${dimensionName}`, value);
+    };
 
-      return (
-        <div className="card">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Product Main Image */}
-            <img src={product.main_image} alt={product.title} />
-            {/* Product Info */}
-            <h3>{product.title}</h3>
-            <p>Rating: {product.rating}</p>
-            <p>Availability: {product.availability}</p>
-            {/* Dimension Selection (if present) */}
-            {product.dimensions && Object.keys(product.dimensions).length > 0 && (
-              <div className="variants-section">
-                {Object.entries(product.dimensions).map(
-                  ([dimensionName, dimensionValues]) => (
-                    <div key={dimensionName}>
-                      <label
-                        htmlFor={dimensionName}
-                        style={{ marginRight: "0.5rem", fontWeight: "bold" }}
-                      >
-                        {dimensionName}:
-                      </label>
-                      <select
-                        id={dimensionName}
-                        {...register(`dimension.${dimensionName}`)}
-                      >
-                        <option value="">-- Select {dimensionName} --</option>
-                        {dimensionValues.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )
-                )}
-              </div>
-            )}
-            {/* Checkout Button */}
-            <button type="submit">Checkout</button>
-          </form>
-          {/* Checkout Modal */}
-          {openCheckout && (
-            <CheckoutModal
-              product={product}
-              selectedDimension={selectedDimension}
-              onClose={() => setOpenCheckout(false)}
-            />
+    // Open the checkout modal
+    const onSubmit = () => {
+      setOpenCheckout(true);
+    };
+
+    return (
+      <div className="card">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Product Main Image */}
+          <img src={product.main_image} alt={product.title} />
+          {/* Product Info */}
+          <h3>{product.title}</h3>
+          <p>Rating: {product.rating}</p>
+          <p>Availability: {product.availability}</p>
+          {/* Dimension Selection (if present) */}
+          {product.dimensions && Object.keys(product.dimensions).length > 0 && (
+            <div className="variants-section">
+              {Object.entries(product.dimensions).map(
+                ([dimensionName, dimensionValues]) => (
+                  <div key={dimensionName}>
+                    <label
+                      htmlFor={dimensionName}
+                      style={{ marginRight: "0.5rem", fontWeight: "bold" }}
+                    >
+                      {dimensionName}:
+                    </label>
+                    <select
+                      id={dimensionName}
+                      {...register(`dimension.${dimensionName}`)}
+                    >
+                      <option value="">-- Select {dimensionName} --</option>
+                      {dimensionValues.map((value) => (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )
+              )}
+            </div>
           )}
-        </div>
-      );
-    }
-    ```
+          {/* Checkout Button */}
+          <button type="submit">Checkout</button>
+        </form>
+        {/* Checkout Modal */}
+        {openCheckout && (
+          <CheckoutModal
+            product={product}
+            selectedDimension={selectedDimension}
+            onClose={() => setOpenCheckout(false)}
+          />
+        )}
+      </div>
+    );
+  }
+  ```
   </Tab>
 
   <Tab title="CheckoutModal.jsx">

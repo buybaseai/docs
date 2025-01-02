@@ -87,7 +87,7 @@
       "group": "Search",
       "pages": ["/api-reference/search/get"]
     },
-        {
+    {
       "group": "Summary",
       "pages": ["/api-reference/summary/post"]
     },
