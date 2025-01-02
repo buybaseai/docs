@@ -87,6 +87,10 @@
       "group": "Search",
       "pages": ["/api-reference/search/get"]
     },
+        {
+      "group": "Summary",
+      "pages": ["/api-reference/summary/post"]
+    },
     {
       "group": "Buy",
       "pages": ["/api-reference/buy/post"]
