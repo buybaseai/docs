@@ -48,7 +48,7 @@
     },
     {
       "name": "API",
-      "url": "api"
+      "url": "api-reference"
     },
     {
       "name": "Changelog",
@@ -85,23 +85,23 @@
     },
     {
       "group": "Search",
-      "pages": ["/api/search/get"]
+      "pages": ["/api-reference/search/get"]
     },
     {
       "group": "Search",
-      "pages": ["/api/search/get"]
+      "pages": ["/api-reference/search/get"]
     },
     {
       "group": "Buy",
-      "pages": ["/api/buy/post"]
+      "pages": ["/api-reference/buy/post"]
     },
     {
       "group": "Users",
-      "pages": ["/api/users/post", "/api/users/get", "/api/users/delete"]
+      "pages": ["/api-reference/users/post", "/api/users/get", "/api/users/delete"]
     },
     {
       "group": "Apps",
-      "pages": ["/api/apps/get"]
+      "pages": ["/api-reference/apps/get"]
     },
     {
       "group": "Changelog",
