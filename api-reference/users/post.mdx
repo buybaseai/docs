@@ -13,11 +13,12 @@ api: "POST /users/create"
 ### Body
 
 <ParamField body="app_id" type="string" required>
-  The unique identifier for the app. Must match pattern: ^app_[a-z0-9]{16}$
+  The unique identifier for the app.
 </ParamField>
 
 <ParamField body="shipping_address" type="object" required>
   The shipping address for the user.
+
   ```json
   {
     "first_name": "string", 
@@ -49,13 +50,20 @@ api: "POST /users/create"
 
 <ResponseField name="code" type="string">
   A code indicating the result of the user creation operation. Possible values:
-  - `USER_CREATED`: User created successfully
-  - `AUTH_MISSING`: No API key provided
-  - `INVALID_KEY`: Invalid API key
-  - `BAD_REQUEST_ERROR`: Invalid request parameters
-  - `APP_NOT_FOUND`: App not found
-  - `FORBIDDEN`: Not authorized to access app
-  - `INTERNAL_ERROR`: Server error occurred
+
+  * `USER_CREATED`: User created successfully
+
+  * `AUTH_MISSING`: No API key provided
+
+  * `INVALID_KEY`: Invalid API key
+
+  * `BAD_REQUEST_ERROR`: Invalid request parameters
+
+  * `APP_NOT_FOUND`: App not found
+
+  * `FORBIDDEN`: Not authorized to access app
+
+  * `INTERNAL_ERROR`: Server error occurred
 </ResponseField>
 
 <ResponseField name="error" type="string">
@@ -63,10 +71,10 @@ api: "POST /users/create"
 </ResponseField>
 
 <ResponseExample>
-```json
-{
-  "message": "User created successfully",
-  "code": "USER_CREATED"
-}
-```
+  ```json
+  {
+    "message": "User created successfully",
+    "code": "USER_CREATED"
+  }
+  ```
 </ResponseExample>
