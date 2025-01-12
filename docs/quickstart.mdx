@@ -44,7 +44,7 @@ See the [API Reference](/api-reference/users/post) for more information.
 
 We recommend creating a Buybase user when a user signs up for your application. This way, it's done at the most relevant time in the user's journey, and will save you and them extra steps down the line.
 
-#### NextJS Frontend
+### Frontend
 
 On your frontend, you might have a component that handles the sign up flow, like `<SignUp />`.
 Let's say the path to this component is `app/components/SignUp.js`.
@@ -68,7 +68,7 @@ const signUp = async (formData) => {
 };
 ```
 
-#### NextJS API Route
+#### API Route
 
 Let's create a NextJS API route to create a Buybase user.
 The path to the API route is `app/your-api/buybase/users/create/route.js`.
@@ -204,8 +204,7 @@ This would generate a response from the LLM that includes a function call to the
 Since this is a conversational shopping experience, our frontend needs a way to display a log of the conversation history between the user and the assistant. When we receive a tool call, we'll want to display the search results in the conversation history.
 You might setup a `<Conversation />` component that looks something like this:
 
-#### NextJS Frontend
-
+#### Frontend
 <Tabs>
   <Tab title="Conversation.jsx">
     ```jsx
@@ -368,7 +367,7 @@ You might setup a `<Conversation />` component that looks something like this:
   </Tab>
 </Tabs>
 
-#### NextJS API Route
+#### API Route
 
 Let's create a NextJS API route to handle the search request.
 The path to the API route is `app/your-api/buybase/search/route.js`.
@@ -398,8 +397,7 @@ export async function POST(req) {
 
 With our conversation UI and search results display in place, let's implement the purchasing functionality. The SearchResults.jsx component above provides the foundation - now we need to create a component that displays detailed product information and enables one-click purchasing.
 
-#### NextJS Frontend
-
+#### Frontend
 ```jsx
 "use client";
 import axios from "axios";
@@ -482,7 +480,7 @@ function BuyNowModal({ selectedProduct, setIsBuyNowModalOpen }) {
 export default BuyNowModal;
 ```
 
-#### NextJS API Route
+#### API Route
 
 Let's create a NextJS API route to handle the buy request.
 The path to the API route is `app/your-api/buybase/buy/route.js`.
