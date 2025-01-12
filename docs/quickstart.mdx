@@ -44,7 +44,7 @@ See the [API Reference](/api-reference/users/post) for more information.
 
 We recommend creating a Buybase user when a user signs up for your application. This way, it's done at the most relevant time in the user's journey, and will save you and them extra steps down the line.
 
-### Frontend
+#### Frontend
 
 On your frontend, you might have a component that handles the sign up flow, like `<SignUp />`.
 Let's say the path to this component is `app/components/SignUp.js`.
@@ -205,6 +205,7 @@ Since this is a conversational shopping experience, our frontend needs a way to 
 You might setup a `<Conversation />` component that looks something like this:
 
 #### Frontend
+
 <Tabs>
   <Tab title="Conversation.jsx">
     ```jsx
@@ -398,6 +399,7 @@ export async function POST(req) {
 With our conversation UI and search results display in place, let's implement the purchasing functionality. The SearchResults.jsx component above provides the foundation - now we need to create a component that displays detailed product information and enables one-click purchasing.
 
 #### Frontend
+
 ```jsx
 "use client";
 import axios from "axios";
