@@ -58,17 +58,7 @@
   "navigation": [
     {
       "group": "General",
-      "pages": ["/docs/welcome"]
-    },
-    {
-      "group": "How To",
-      "icon": "books",
-      "pages": [
-        "/docs/how-to/overview",
-        "/docs/how-to/steps/create-user",
-        "/docs/how-to/steps/link-user",
-        "/docs/how-to/steps/search-buy"
-      ]
+      "pages": ["/docs/welcome", "/docs/quickstart"]
     },
     {
       "group": "Reference",
@@ -88,16 +78,16 @@
       "pages": ["/api-reference/search/get"]
     },
     {
-      "group": "Summary",
-      "pages": ["/api-reference/summary/post"]
-    },
-    {
       "group": "Buy",
       "pages": ["/api-reference/buy/post"]
     },
     {
       "group": "Users",
       "pages": ["/api-reference/users/post", "/api-reference/users/get", "/api-reference/users/delete"]
+    },
+    {
+      "group": "Stores",
+      "pages": ["/api-reference/stores/get"]
     },
     {
       "group": "Apps",

@@ -1,7 +1,7 @@
 ---
 title: "Search Items"
-description: 'Search for 3 items on e-commerce platforms.'
-api: "GET /search"
+description: 'Search for items in a store.'
+api: "POST /search"
 ---
 
 ### Headers
@@ -10,33 +10,26 @@ api: "GET /search"
   Your API key for authorization.
 </ParamField>
 
-### Query Parameters
+### Body Parameters
 
-<ParamField query="q" type="string" required>
-  The search query. Example: "Apple Macbook Pro 16 Inch 2024"
+<ParamField body="q" type="string" required>
+  The search query provided by your LLM tool call.
 </ParamField>
 
-<ParamField query="platform" type="string" required>
-  The e-commerce platform to search on. Currently, we only support `amazon`.
+<ParamField body="store_id" type="string" required>
+  The ID of the store to search in.
 </ParamField>
 
-<ParamField query="price_min" type="integer">
+<ParamField body="user_id" type="string" required>
+  The ID of the user performing the search.
+</ParamField>
+
+<ParamField body="price_min" type="integer">
   Minimum price filter for the search results. Must be at least 1.
 </ParamField>
 
-<ParamField query="price_max" type="integer">
+<ParamField body="price_max" type="integer">
   Maximum price filter for the search results. Must be at least 1.
-</ParamField>
-
-<ParamField query="sort_by" type="string">
-  Sort the search results by the specified criteria. Options include:
-  
-  * `price_low_to_high`
-  * `price_high_to_low`
-  * `best_sellers`
-  * `featured`
-  * `average_review`
-  * `newest_arrivals`
 </ParamField>
 
 ### Response
@@ -44,25 +37,37 @@ api: "GET /search"
 <ResponseField name="results" type="array">
   An array of product details, each containing:
 
+  * `id`: The unique identifier of the product.
   * `title`: The product title.
-  * `price`: The product price.
-  * `rating`: The product rating.
-  * `brand`: The brand of the product.
-  * `feature_bullets`: Key features of the product.
-  * `attributes`: Additional attributes of the product.
-  * `variant_combinations`: Combinations of product variants & product ids of combinations.
-  * `dimensions`: A map of available variants and their values.
-  * `main_image`: The main image of the product.
-  * `url`: The product URL.
-  * `availability`: The availability of the product.
-  * `max_order_qty`: The maximum order quantity of the product.
-  * `images`: Images of the product.
-  * `reviews_count`: Number of reviews.
-  * `reviews`: An array of reviews with details like rating, title, text, date, profile, helpful votes, and verified purchase status.
+  * `description`: The product description.
+  * `product_type`: The type/category of the product.
+  * `tags`: Array of tags associated with the product.
+  * `options`: Available product options.
+  * `images`: Array of product images.
+  * `variants`: Array of product variants, each containing:
+    * `id`: The variant ID.
+    * `title`: The variant title.
+    * `price`: The variant price.
 </ResponseField>
 
 <ResponseField name="code" type="string">
-  A code indicating the result of the search operation. Possible value: `SEARCH_SUCCESS`.
+  A code indicating the result of the search operation. Possible values:
+  * `SEARCH_SUCCESS`: Search completed successfully with results
+  * `NO_RESULTS_FOUND`: Search completed but no results found
+  * `AUTH_MISSING`: No API key provided
+  * `INVALID_KEY`: Invalid API key
+  * `BAD_REQUEST_ERROR`: Invalid request parameters
+  * `STORE_NOT_FOUND`: Store ID not found
+  * `FORBIDDEN`: Not authorized to access store
+  * `INTERNAL_ERROR`: Server error occurred
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Additional details about the error if the request fails.
 </ResponseField>
 
 <ResponseExample>
@@ -70,37 +75,44 @@ api: "GET /search"
   {
     "results": [
       {
-        "title": "Sample Product",
-        "price": 299.99,
-        "rating": 4.5,
-        "brand": "Sample Brand",
-        "feature_bullets": ["Feature 1", "Feature 2"],
-        "attributes": {"Color": "Black", "Size": "Medium"},
-        "variant_combinations": [
+        "id": "8154074775744",
+        "title": "The Collection Snowboard: Liquid",
+        "description": null,
+        "product_type": "snowboard",
+        "tags": "Accessory, Sport, Winter",
+        "options": [
           {
-            "dimensions": [{"name": "Size", "value": "7.5"}, {"name": "Color", "value": "Red"}],
-            "asin": "B123"
+            "id": 10458693861568,
+            "product_id": 8154074775744,
+            "name": "Title", 
+            "position": 1,
+            "values": [
+              "Default Title"
+            ]
           }
         ],
-        "dimensions": {"Size": ["7.5", "9"], "Color": ["Red", "Black"]},
-        "main_image": "https://example.com/main-image.jpg",
-        "url": "https://example.com/product",
-        "availability": "In Stock",
-        "max_order_qty": 10,
-        "images": ["https://example.com/image1.jpg"],
-        "reviews_count": 150,
-        "reviews": [
+        "images": [
           {
-            "rating": 5,
-            "title": "Great product",
-            "text": "I loved it!",
-            "date": "2023-10-01",
-            "profile": "John Doe",
-            "helpful_votes": 10,
-            "verified_purchase": true
+            "id": 41770216652992,
+            "alt": "Top and bottom view of a snowboard. The top view shows a stylized scene of water, trees, mountains,\n        sky and a moon in blue colours. The bottom view has a blue liquid, drippy background with the text "liquid" in\n        a stylized script typeface.",
+            "position": 1,
+            "product_id": 8154074775744,
+            "created_at": "2025-01-09T13:16:46-05:00",
+            "updated_at": "2025-01-09T13:16:48-05:00",
+            "admin_graphql_api_id": "gid://shopify/ProductImage/41770216652992",
+            "width": 1600,
+            "height": 1600,
+            "src": "https://cdn.shopify.com/s/files/1/0680/5936/5568/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1736446608",
+            "variant_ids": []
+          }
+        ],
+        "variants": [
+          {
+            "id": 46002863112384,
+            "title": "Default Title",
+            "price": "749.95"
           }
         ]
-        ...
       }
     ],
     "code": "SEARCH_SUCCESS"

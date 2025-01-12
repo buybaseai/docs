@@ -14,9 +14,11 @@ Below are the response codes used in the API:
   - `USER_CREATED`: User created successfully
   - `BUYBASE_LINK`: Buybase link created successfully
   - `APP_RESPONSE`: App data retrieved successfully
+  - `STORE_RESPONSE`: Store details retrieved successfully
+  - `ORDER_CREATED`: Order created successfully
 
 - **400 Bad Request**
-  - `BAD_REQUEST_ERROR`: Bad request due to validation issues
+  - `BAD_REQUEST_ERROR`: Invalid request parameters
   - `DEVELOPER_NOT_FOUND`: Developer not found
   - `APP_NOT_FOUND`: App not found
   - `USER_NOT_FOUND`: User not found
@@ -24,9 +26,14 @@ Below are the response codes used in the API:
   - `SESSION_NOT_FOUND`: Session not found
   - `EXPIRED_SESSION`: Session expired
   - `INSUFFICIENT_STOCK`: Insufficient stock
+  - `STORE_NOT_FOUND`: Store ID not found
 
 - **401 Unauthorized**
   - `AUTH_MISSING`: No API key provided
+  - `INVALID_KEY`: Invalid API key
+
+- **403 Forbidden**
+  - `FORBIDDEN`: Not authorized to access store
 
 - **500 Internal Server Error**
   - `INTERNAL_ERROR`: An error occurred during processing

@@ -12,74 +12,28 @@ api: "POST /buy"
 
 ### Body
 
-<ParamField body="platform" type="string" required>
-  The platform to purchase from. Currently supported: `amazon`,
-</ParamField>
-
-<ParamField body="user_id" type="string" required>
-  The unique identifier for the user. Must match pattern: user_[a-z0-9]{16}
-</ParamField>
-
-<ParamField body="developer_id" type="string" required>
-  The unique identifier for the developer.
-</ParamField>
-
-<ParamField body="app_id" type="string" required>
-  The unique identifier for the app.
-</ParamField>
-
-<ParamField body="quantity" type="integer" required>
-  The number of items to purchase. Must be a positive integer.
-</ParamField>
-
-<ParamField body="summary_id" type="string" required>
-  The unique identifier for the summary. Must match pattern: sum_[a-z0-9]{16}
-</ParamField>
-
-<ParamField body="selected_dimension" type="object" required>
-  The selected product variants/dimensions.
-  ```json
-  {
-    "color": "blue",
-    "size": "XL"
-  }
-  ```
-</ParamField>
-
-<ParamField body="variant_combinations" type="array" required>
-  Array of available variant combinations with their dimensions and product IDs.
-  <Info>
-    This is part of the [search](/api-reference/search/get) response object.
-  </Info>
+<ParamField body="items" type="array" required>
+  Array of items to purchase.
   ```json
   [
     {
-      "dimensions": [
-        { "name": "Size", "value": "Medium" },
-        { "name": "Color", "value": "Red" }
-      ],
-      "product_id": "B123456789"
-    },
-    {
-      "dimensions": [
-        { "name": "Size", "value": "Large" },
-        { "name": "Color", "value": "Blue" }
-      ],
-      "product_id": "B987654321"
-    },
-    {
-      "dimensions": [
-        { "name": "Size", "value": "Small" },
-        { "name": "Color", "value": "Green" }
-      ],
-      "product_id": "B112233445"
+      "variant_id": "string", // Shopify variant ID
+      "quantity": 1 // Must be at least 1
     }
-    ...
   ]
   ```
 </ParamField>
 
+<ParamField body="user_id" type="string" required>
+  The unique identifier for the user.
+</ParamField>
+
+<ParamField body="store_id" type="string" required>
+  The unique identifier for the store.
+</ParamField>
+
 ### Response
+
 
 <ResponseField name="message" type="string">
   A message indicating the result of the purchase operation.
@@ -87,15 +41,14 @@ api: "POST /buy"
 
 <ResponseField name="code" type="string">
   A code indicating the result of the purchase operation. Possible values:
-  - `PURCHASE_SUCCESS`: Purchase completed successfully
+  - `ORDER_CREATED`: Order created successfully
+  - `AUTH_MISSING`: No API key provided
+  - `INVALID_KEY`: Invalid API key
   - `BAD_REQUEST_ERROR`: Invalid request parameters
-  - `DEVELOPER_NOT_FOUND`: Developer ID not found
-  - `APP_NOT_FOUND`: App ID not found 
+  - `STORE_NOT_FOUND`: Store ID not found
   - `USER_NOT_FOUND`: User ID not found
-  - `PAYMENT_METHOD_NOT_FOUND`: User payment method missing
-  - `SESSION_NOT_FOUND`: Platform session missing
-  - `EXPIRED_SESSION`: Platform session expired
-  - `SUMMARY_NOT_FOUND`: Summary ID not found
+  - `STORE_NOT_VERIFIED`: Store is not verified yet
+  - `FORBIDDEN`: Not authorized to access store
   - `INTERNAL_ERROR`: Server error occurred
 </ResponseField>
 
@@ -103,15 +56,12 @@ api: "POST /buy"
   Error message if the request fails.
 </ResponseField>
 
-<ResponseField name="buybase_link" type="string">
-  A link to authenticate the user if their session is expired or payment method is missing.
-</ResponseField>
-
 <ResponseExample>
-```json
-{
-  "message": "Purchase successful",
-  "code": "PURCHASE_SUCCESS"
-}
-```
+  ```json
+  {
+    "message": "Order created successfully",
+    "code": "ORDER_CREATED"
+  }
+  ```
 </ResponseExample>
+
