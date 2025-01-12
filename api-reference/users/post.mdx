@@ -13,30 +13,60 @@ api: "POST /users/create"
 ### Body
 
 <ParamField body="app_id" type="string" required>
-  The unique identifier for the app.
+  The unique identifier for the app. Must match pattern: ^app_[a-z0-9]{16}$
 </ParamField>
 
-<ParamField body="developer_id" type="string" required>
-  The unique identifier for the developer.
+<ParamField body="shipping_address" type="object" required>
+  The shipping address for the user.
+  ```json
+  {
+    "first_name": "string", 
+    "last_name": "string", 
+    "address1": "string", 
+    "address2": "string", 
+    "city": "string", 
+    "state": "string", 
+    "zip": "string", 
+    "country": "string", 
+    "country_code": "string", 
+    "province": "string", 
+    "province_code": "string", 
+    "phone": "string", 
+    "email": "string" 
+  }
+  ```
 </ParamField>
 
 ### Response
+
+<ResponseField name="user" type="object">
+  The created user object.
+</ResponseField>
 
 <ResponseField name="message" type="string">
   A message indicating the result of the user creation operation.
 </ResponseField>
 
 <ResponseField name="code" type="string">
-  A code indicating the result of the user creation operation.
+  A code indicating the result of the user creation operation. Possible values:
+  - `USER_CREATED`: User created successfully
+  - `AUTH_MISSING`: No API key provided
+  - `INVALID_KEY`: Invalid API key
+  - `BAD_REQUEST_ERROR`: Invalid request parameters
+  - `APP_NOT_FOUND`: App not found
+  - `FORBIDDEN`: Not authorized to access app
+  - `INTERNAL_ERROR`: Server error occurred
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
 </ResponseField>
 
 <ResponseExample>
-
-```json Response
+```json
 {
   "message": "User created successfully",
   "code": "USER_CREATED"
 }
 ```
-
 </ResponseExample>
