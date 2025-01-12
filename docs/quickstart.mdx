@@ -9,8 +9,10 @@ icon: "bolt"
 In this quickstart guide, you'll learn how to:
 
 1. Create a new user for your Buybase app.
+
 2. Search a Shopify store's product catalog using natural language.
-3. Initiate a checkout for the user to complete their purchase.
+
+3. Automate the purchase of an item on behalf of your user.
 
 <Info>
   **Security Tip:** To avoid exposing sensitive information, we recommend using
@@ -20,8 +22,11 @@ In this quickstart guide, you'll learn how to:
 ## Prerequisites
 
 1. An `API KEY` from your OpenAI account.
+
 2. An `APP ID`, `STORE ID`, and `API KEY` from your Buybase account.
+
 3. A store setup with a product catalog and the Buybase Shopify app installed.
+
 4. A NextJS project setup on your local machine.
 
 <Info>
@@ -200,8 +205,9 @@ Since this is a conversational shopping experience, our frontend needs a way to 
 You might setup a `<Conversation />` component that looks something like this:
 
 #### NextJS Frontend
+
 <Tabs>
-    <Tab title="Conversation.jsx"> 
+  <Tab title="Conversation.jsx">
     ```jsx
     "use client";
     import React, { useState } from "react";
@@ -301,64 +307,65 @@ You might setup a `<Conversation />` component that looks something like this:
 
     export default Conversation;
     ```
-    </Tab>
-    <Tab title="SearchResults.jsx">
-      ```jsx
-      "use client";
-      import React, { useState } from "react";
-      import BuyNowModal from "./BuyNow";
+  </Tab>
 
-      function SearchResults({ products }) {
-        const [activeProduct, setActiveProduct] = useState(null);
-        const [isBuyNowModalOpen, setIsBuyNowModalOpen] = useState(false);
+  <Tab title="SearchResults.jsx">
+    ```jsx
+    "use client";
+    import React, { useState } from "react";
+    import BuyNowModal from "./BuyNow";
 
-        const handleOpenModal = (productIndex) => {
-          const selectedProduct = products[productIndex];
-          setActiveProduct(selectedProduct);
-          setIsBuyNowModalOpen(true);
-        };
+    function SearchResults({ products }) {
+      const [activeProduct, setActiveProduct] = useState(null);
+      const [isBuyNowModalOpen, setIsBuyNowModalOpen] = useState(false);
 
-        return (
-          <>
-            <div className="flex flex-row gap-4 w-screen overflow-x-scroll">
-              {/* Product Results */}
-              {products?.length === 0 && <p>No products found</p>}
-              {products?.map((product, productIndex) => (
-                <div
-                  key={product.id}
-                  className="flex flex-col gap-4 w-[300px] flex-shrink-0 items-start"
-                >
-                  <img
-                    src={product.images[0]?.src}
-                    alt="product image"
-                    style={{ width: "100%", height: "400px", objectFit: "cover" }}
-                  />
-                  <h3>{product.title}</h3>
-                  <p>{product.variants[0]?.price}</p>
-                  <p>{product.reason}</p>
-                  <button
-                    onClick={() => handleOpenModal(productIndex)}
-                    className="bg-black text-white px-4 py-2 w-full"
-                  >
-                    Buy Now
-                  </button>
-                </div>
-              ))}
-              {/* Buy Now Modal */}
-              {isBuyNowModalOpen && activeProduct !== null && (
-                <BuyNowModal
-                  selectedProduct={activeProduct}
-                  setIsBuyNowModalOpen={setIsBuyNowModalOpen}
+      const handleOpenModal = (productIndex) => {
+        const selectedProduct = products[productIndex];
+        setActiveProduct(selectedProduct);
+        setIsBuyNowModalOpen(true);
+      };
+
+      return (
+        <>
+          <div className="flex flex-row gap-4 w-screen overflow-x-scroll">
+            {/* Product Results */}
+            {products?.length === 0 && <p>No products found</p>}
+            {products?.map((product, productIndex) => (
+              <div
+                key={product.id}
+                className="flex flex-col gap-4 w-[300px] flex-shrink-0 items-start"
+              >
+                <img
+                  src={product.images[0]?.src}
+                  alt="product image"
+                  style={{ width: "100%", height: "400px", objectFit: "cover" }}
                 />
-              )}
-            </div>
-          </>
-        );
-      }
+                <h3>{product.title}</h3>
+                <p>{product.variants[0]?.price}</p>
+                <p>{product.reason}</p>
+                <button
+                  onClick={() => handleOpenModal(productIndex)}
+                  className="bg-black text-white px-4 py-2 w-full"
+                >
+                  Buy Now
+                </button>
+              </div>
+            ))}
+            {/* Buy Now Modal */}
+            {isBuyNowModalOpen && activeProduct !== null && (
+              <BuyNowModal
+                selectedProduct={activeProduct}
+                setIsBuyNowModalOpen={setIsBuyNowModalOpen}
+              />
+            )}
+          </div>
+        </>
+      );
+    }
 
-      export default SearchResults;
-      ```
-    </Tab>
+    export default SearchResults;
+    ```
+  </Tab>
 </Tabs>
 
 #### NextJS API Route
@@ -388,10 +395,11 @@ export async function POST(req) {
 ```
 
 ## Buy Products
+
 With our conversation UI and search results display in place, let's implement the purchasing functionality. The SearchResults.jsx component above provides the foundation - now we need to create a component that displays detailed product information and enables one-click purchasing.
 
-
 #### NextJS Frontend
+
 ```jsx
 "use client";
 import axios from "axios";
@@ -508,8 +516,3 @@ export async function POST(req) {
   }
 }
 ```
-
-
-
-
-
