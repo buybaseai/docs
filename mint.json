@@ -16,16 +16,16 @@
     }
   },
   "colors": {
-    "primary": "#2DC852",
-    "light": "#A7A79C",
-    "dark": "#2AB74B",
+    "primary": "#323232",
+    "light": "#323232",
+    "dark": "#323232",
     "background": {
-      "dark": "#1E1E1E",
-      "light": "#FCFCF7"
+      "dark": "#323232",
+      "light": "#323232"
     },
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#323232",
+      "to": "#323232"
     }
   },
   "api": {
