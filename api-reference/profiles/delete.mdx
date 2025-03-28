@@ -1,0 +1,51 @@
+---
+title: "Delete"
+description: 'Delete a style profile.'
+api: "DELETE /styles/{id}"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="profile_id" type="string" required>
+  The ID of the profile to delete.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A message confirming the deletion.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `PROFILE_DELETED`: Profile deleted successfully
+  * `PROFILE_DELETE_FAILED`: Failed to delete profile
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<Note>
+  Deleting a profile will permanently remove it and all associated data. This action cannot be undone.
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "message": "Profile \"prof_12345\" deleted successfully",
+    "code": "PROFILE_DELETED"
+  }
+  ```
+</ResponseExample>

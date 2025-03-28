@@ -1,0 +1,130 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "appearance": {
+    "default": "light",
+    "strict": true
+  },
+  "name": "Buybase",
+  "colors": {
+    "primary": "#323232",
+    "light": "#FFFEF9"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "General",
+            "pages": [
+              "docs/welcome",
+              "docs/quickstart"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "docs/use-cases",
+              "docs/supported-platforms",
+              "docs/response-codes"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API",
+        "groups": [
+          {
+            "group": "Search",
+            "pages": [
+              "api-reference/search/post"
+            ]
+          },
+          {
+            "group": "Profiles",
+            "pages": [
+              "api-reference/profiles/get",
+              "api-reference/profiles/post",
+              "api-reference/profiles/delete"
+            ]
+          },
+          {
+            "group": "Styles",
+            "pages": [
+              "api-reference/styles/get",
+              "api-reference/styles/post",
+              "api-reference/styles/delete",
+              "api-reference/styles/update"
+            ]
+          },
+          {
+            "group": "Shipping Addresses",
+            "pages": [
+              "api-reference/shipping/get",
+              "api-reference/shipping/post",
+              "api-reference/shipping/delete",
+              "api-reference/shipping/update"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "groups": [
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/overview"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "logo": {
+    "light": "/logo/buybase-dark.svg",
+    "dark": "/logo/buybase-light.svg"
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.buybase.ai"
+    }
+  },
+  "background": {
+    "color": {
+      "light": "#ffffff"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Community",
+        "href": "https://discord.gg/9EXhpj7nDZ"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://devs.buybase.ai"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/buybaseai",
+      "linkedin": "https://linkedin.com/company/buybaseai"
+    }
+  },
+  "fonts": {
+    "heading": {
+      "family": "Geist"
+    },
+    "body": {
+      "family": "Geist"
+    }
+  }
+}

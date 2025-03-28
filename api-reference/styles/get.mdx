@@ -1,0 +1,58 @@
+---
+title: "Retrieve"
+description: 'Retrieve a style profile.'
+api: "GET /styles/{id}"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the style to retrieve.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="style" type="object">
+  The style object containing:
+  - `id`: The style ID
+  - `text`: The style description
+  - `profile_id`: The ID of the profile this style is attached to
+  - `created_at`: Timestamp when the style was created
+  - `updated_at`: Timestamp when the style was last updated
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `STYLE_RETRIEVED`: Style retrieved successfully
+  * `STYLE_NOT_FOUND`: Style not found
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "style": {
+      "id": "style_12345",
+      "text": "Minimalist casual style with neutral colors like black, white, and beige. Preference for cotton fabrics, clean lines, and simple designs without logos or patterns.",
+      "profile_id": "prof_67890",
+      "created_at": "2023-09-15T14:22:31Z",
+      "updated_at": "2023-09-15T14:22:31Z"
+    },
+    "code": "STYLE_RETRIEVED"
+  }
+  ```
+</ResponseExample>

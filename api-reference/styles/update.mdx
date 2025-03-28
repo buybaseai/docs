@@ -1,0 +1,80 @@
+---
+title: "Update"
+description: 'Update a style profile.'
+api: "PUT /styles/{id}"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the style to update.
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="text" type="string" required>
+  New descriptive text for the style profile. This should include style preferences, colors, patterns, or any other fashion attributes that define the style.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="style" type="object">
+  The updated style object containing:
+  <Expandable title="Style properties">
+    <ResponseField name="id" type="string">
+      The unique identifier for the style.
+    </ResponseField>
+    <ResponseField name="text" type="string">
+      The updated style description text.
+    </ResponseField>
+    <ResponseField name="profile_id" type="string">
+      The ID of the profile this style is attached to.
+    </ResponseField>
+    <ResponseField name="created_at" type="string">
+      Timestamp when the style was created.
+    </ResponseField>
+    <ResponseField name="updated_at" type="string">
+      Timestamp when the style was last updated.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `STYLE_UPDATED`: Style updated successfully
+  * `STYLE_PROFILE_UPDATE_FAILED`: Failed to update style profile
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<Note>
+  Updating a style will regenerate the style embedding using the new text, which may affect how products are matched to this style.
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "style": {
+      "id": "style_12345",
+      "text": "Updated minimalist style with focus on earth tones, sustainable fabrics, and versatile pieces that can be dressed up or down.",
+      "profile_id": "prof_67890",
+      "updated_at": "2023-09-16T10:15:22Z"
+    },
+    "id": "style_12345",
+    "code": "STYLE_UPDATED"
+  }
+  ```
+</ResponseExample>

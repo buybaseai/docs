@@ -1,0 +1,62 @@
+---
+title: "Retrieve"
+description: 'Retrieve a shipping address.'
+api: "GET /shipping-addresses/{id}"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the shipping address to retrieve.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="shipping" type="object">
+  The shipping address object.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `SHIPPING_RETRIEVED`: Shipping address retrieved successfully
+  * `SHIPPING_NOT_FOUND`: Shipping address not found
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "shipping": {
+      "id": "ship_12345",
+      "first_name": "John",
+      "last_name": "Smith",
+      "email": "john.smith@example.com",
+      "phone": "+1234567890",
+      "address_1": "456 Park Ave",
+      "address_2": "Suite 789",
+      "city": "New York",
+      "country_code": "US",
+      "province_code": "NY",
+      "postal_code": "10022",
+      "profile_id": "prof_67890",
+      "created_at": "2023-09-15T14:22:31Z",
+      "updated_at": "2023-09-16T10:15:22Z"
+    },
+    "code": "SHIPPING_RETRIEVED"
+  }
+  ```
+</ResponseExample>

@@ -1,0 +1,230 @@
+---
+title: "Search"
+description: "Discover tailored product recommendations from our extensive database of millions of online products from thousands of Shopify stores."
+api: "POST /search/products"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="query" type="object" required>
+  <Expandable title="Query object">
+    <ParamField body="text" type="string" required>
+      The text search query. e.g. "beach gear for miami"
+    </ParamField>
+    <ParamField body="image_url" type="string">
+      Intended to be a reference or inspiration for the text query.
+      <Note>Image search is only available on Pro plans and above.</Note>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="profile_id" type="string">
+  Optional ID of a profile to influence search results in a personalized way and provide checkout URLs with shipping forms pre-filled with the profile's attached shipping address.
+</ParamField>
+
+<ParamField body="store_id" type="string">
+  The ID of the store to search in. 
+</ParamField>
+
+<ParamField body="store_domain" type="string">
+  The domain of the store to search in. 
+</ParamField>
+
+<ParamField body="query_weight" type="number" default="1">
+  Weight to apply to the query which represents the text, image, or both (0-1).
+  <Note>When using a style profile, defaults to 0.7.</Note>
+</ParamField>
+
+<ParamField body="style_weight" type="number" default="0.3">
+  Weight to apply to the style profile (0-1).
+  <Note>
+    Only applies if profile_id is provided and the profile has a style attached.
+  </Note>
+</ParamField>
+
+<ParamField body="similarity_threshold" type="number" default="0.25">
+  Minimum similarity threshold for matching products (0-1).
+</ParamField>
+
+<ParamField body="result_count" type="integer" default="2">
+  Number of results to return. Maximum depends on your plan.
+</ParamField>
+
+<ParamField body="exclude_variant_ids" type="array">
+  Array of variant IDs to exclude from results.
+</ParamField>
+
+<ParamField body="price_min" type="number">
+  Minimum price filter for the search results.
+</ParamField>
+
+<ParamField body="price_max" type="number">
+  Maximum price filter for the search results.
+</ParamField>
+
+### Response
+
+<ResponseField name="results" type="array">
+  An array of product details, each containing:
+  <Expandable title="Product details">
+    <ResponseField name="id" type="string">
+      The unique identifier of the product.
+    </ResponseField>
+    <ResponseField name="title" type="string">
+      The product title.
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      The product description.
+    </ResponseField>
+    <ResponseField name="product_type" type="string">
+      The type/category of the product.
+    </ResponseField>
+    <ResponseField name="options" type="array">
+      Available product options, each containing:
+      <Expandable title="Option details">
+        <ResponseField name="name" type="string">
+          The name of the option (e.g., "Size").
+        </ResponseField>
+        <ResponseField name="values" type="array">
+          Array of possible values for this option (e.g., ["S", "M", "L", "XL"]).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="images" type="array">
+      Array of product images.
+    </ResponseField>
+    <ResponseField name="variants" type="array">
+      Array of product variants, each containing:
+      <Expandable title="Variant details">
+        <ResponseField name="id" type="string">
+          The variant ID.
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          The variant title.
+        </ResponseField>
+        <ResponseField name="price" type="number">
+          The variant price.
+        </ResponseField>
+        <ResponseField name="available" type="boolean">
+          Whether the variant is available.
+        </ResponseField>
+        <ResponseField name="checkout_url" type="string">
+          Direct URL to go to the variant's checkout form with quantity 1.
+        </ResponseField>
+        <ResponseField name="checkout_url_with_shipping" type="string">
+          Direct URL to go to the variant's checkout form with quantity 1 and shipping address pre-filled.
+          <Note>
+            Only applies if profile_id is provided and the profile has a shipping address attached.
+          </Note>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="store_id" type="string">
+      ID of the store.
+    </ResponseField>
+    <ResponseField name="store_name" type="string">
+      Name of the store.
+    </ResponseField>
+    <ResponseField name="store_domain" type="string">
+      Domain of the store.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="product_ids" type="array">
+  Array of product IDs returned in the results.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the search operation. Possible values:
+  * `SEARCH_SUCCESS`: Search completed successfully with results
+  * `NO_RESULTS_FOUND`: Search completed but no results found
+  * `INVALID_REQUEST`: Invalid request parameters
+  * `STORE_NOT_FOUND`: Store ID or brand not found
+  * `PROFILE_NOT_FOUND`: Profile ID not found
+  * `INTERNAL_ERROR`: Server error occurred
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Additional details about the error if the request fails.
+</ResponseField>
+
+### Plan Limitations
+
+<Note>
+  Feature availability varies by plan:
+
+  **Free Plan**:
+  - No image search
+  - Limited result count
+
+  **Growth Plan**:
+  - No image search
+  - Increased result count
+
+  **Pro Plan**:
+  - Image search available
+  - Higher result count limit
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "results": [
+      {
+        "id": "7924157309120",
+        "title": "Classic Cotton T-Shirt",
+        "handle": "classic-cotton-t-shirt",
+        "description": "A comfortable everyday essential made from 100% organic cotton",
+        "product_type": "t-shirt",
+        "images": [ 
+            "https://cdn.shopify.com/s/files/1/0680/5936/5568/files/tshirt_black_front.jpg",
+            "https://cdn.shopify.com/s/files/1/0680/5936/5568/files/tshirt_black_back.jpg"
+        ],
+        "options": [
+          {
+            "name": "Size", 
+            "values": [
+              "S", "M", "L", "XL"
+            ]
+          },
+          {
+            "name": "Color", 
+            "values": [
+              "Black", "White", "Navy"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "id": 46002863112384,
+            "title": "S / Black",
+            "option1": "S",
+            "option2": "Black",
+            "option3": null,
+            "price": "29.95",
+            "available": true,
+            "checkout_url": "https://fashion-store.com/cart/46002863112384:1",
+            "checkout_url_with_shipping": "https://fashion-store.com/cart/46002863112384:1?checkout[email]=user@example.com&checkout[shipping_address][first_name]=John&checkout[shipping_address][last_name]=Doe&checkout[shipping_address][address1]=123 Main St&checkout[shipping_address][city]=New York&checkout[shipping_address][province]=NY&checkout[shipping_address][country]=US&checkout[shipping_address][zip]=10001"
+          }
+        ],
+        "store_id": "store456",
+        "store_name": "Fashion Store",
+        "store_domain": "fashion-store.com"
+      }
+    ],
+    "product_ids": ["7924157309120"],
+    "code": "SEARCH_SUCCESS"
+  }
+  ```
+</ResponseExample>

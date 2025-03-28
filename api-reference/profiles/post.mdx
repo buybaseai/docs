@@ -1,0 +1,53 @@
+---
+title: "Create"
+description: 'Create a profile for your enduser.'
+api: "POST /profiles/create"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Body Parameters
+
+No additional parameters required. The profile will be created for the authenticated developer.
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="profile" type="object">
+  The created profile object.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `PROFILE_CREATED`: Profile created successfully
+  * `PROFILE_CREATION_FAILED`: Failed to create profile
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<Note>
+  A profile is automatically associated with the authenticated developer. Each developer can have multiple profiles.
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "profile": {
+      "id": "prof_12345",
+      "dev_id": "dev_67890",
+      "created_at": "2023-09-15T14:22:31Z"
+    },
+    "code": "PROFILE_CREATED"
+  }
+  ```
+</ResponseExample>

@@ -1,0 +1,66 @@
+---
+title: "Create"
+description: 'Create a style, attach it to a profile.'
+api: "POST /styles/create"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="text" type="string" required>
+  Descriptive text for the style profile. This should include style preferences, colors, patterns, or any other fashion attributes that define the style.
+</ParamField>
+
+<ParamField body="profile_id" type="string" required>
+  The ID of the profile to attach this style to.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="style" type="object">
+  The created style object.
+</ResponseField>
+
+<ResponseField name="attached_profile_id" type="string">
+  The ID of the profile this style is attached to.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `STYLE_CREATED`: Style created successfully
+  * `STYLE_PROFILE_CREATION_FAILED`: Failed to create style profile
+  * `STYLE_EXISTS`: A style already exists for this profile
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<Note>
+  Only one style is allowed per profile. If you need to modify a style, use the update endpoint instead.
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "style": {
+      "id": "style_12345",
+      "text": "Minimalist casual style with neutral colors like black, white, and beige. Preference for cotton fabrics, clean lines, and simple designs without logos or patterns.",
+      "profile_id": "prof_67890",
+      "created_at": "2023-09-15T14:22:31Z"
+    },
+    "attached_profile_id": "prof_67890",
+    "code": "STYLE_CREATED"
+  }
+  ```
+</ResponseExample>

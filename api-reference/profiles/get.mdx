@@ -1,0 +1,88 @@
+---
+title: "Retrieve"
+description: 'Retrieve a profile.'
+api: "GET /profiles/{id}"
+---
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the profile to retrieve.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="profile" type="object">
+  The profile object with associated styles and shipping information.
+</ResponseField>
+
+<ResponseField name="profile.id" type="string">
+  The ID of the profile.
+</ResponseField>
+
+<ResponseField name="profile.styles" type="array">
+  Array of style objects associated with this profile, each containing:
+  - `id`: The style ID
+  - `text`: The style description
+</ResponseField>
+
+<ResponseField name="profile.shipping" type="object">
+  Shipping information associated with this profile, containing:
+  - `id`: The shipping ID
+  - `address_1`: First line of the address
+  - `address_2`: Second line of the address (optional)
+  - `city`: City name
+  - `country`: Country name
+  - `province`: Province or state name
+  - `zip`: Postal or ZIP code
+  - `country_code`: Two-letter country code
+  - `province_code`: Province or state code
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `PROFILE_RETRIEVED`: Profile retrieved successfully
+  * `PROFILE_NOT_FOUND`: Profile not found
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "profile": {
+      "id": "prof_12345",
+      "styles": [
+        {
+          "id": "style_12345",
+          "text": "Minimalist casual style with neutral colors"
+        }
+      ],
+      "shipping": {
+        "id": "ship_12345",
+        "address_1": "123 Main St",
+        "address_2": "Apt 4B",
+        "city": "San Francisco",
+        "country": "United States",
+        "province": "California",
+        "zip": "94105",
+        "country_code": "US",
+        "province_code": "CA"
+      }
+    },
+    "code": "PROFILE_RETRIEVED"
+  }
+  ```
+</ResponseExample>

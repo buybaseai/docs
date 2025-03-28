@@ -1,518 +1,135 @@
 ---
 title: Quickstart
-description: "Get started with Buybase in minutes!"
-icon: "bolt"
+description: "Get your API key and send your first Buybase API request!"
+icon: "cloud-lightning"
 ---
-
-## Introduction
 
 In this quickstart guide, you'll learn how to:
 
-1. Create a new user for your Buybase app.
-
-2. Search a Shopify store's product catalog using natural language.
-
-3. Automate the purchase of an item on behalf of your user.
-
-<Info>
-  **Security Tip:** To avoid exposing sensitive information, we recommend using
-  a secure backend service to proxy all your API requests to Buybase.
-</Info>
-
-## Prerequisites
-
-1. An `API KEY` from your OpenAI account.
-
-2. An `APP ID`, `STORE ID`, and `API KEY` from your Buybase account.
-
-3. A store setup with a product catalog and the Buybase Shopify app installed.
-
-4. A NextJS project setup on your local machine.
-
-<Info>
-  **Note:** If you don't have a Shopify store to test with, Buybase manages a
-  test store for your use. Store ID: `1234567890`
-</Info>
-
-## Create a New User
-
-To create a new Buybase user, you'll need to make a request to the `/users/create` endpoint.
-We create users for your Buybase project so that we can track their purchasing history, and personalize the search experience for them in the future.
-See the [API Reference](/api-reference/users/post) for more information.
-
-### Implementing in Sign Up Flow
-
-We recommend creating a Buybase user when a user signs up for your application. This way, it's done at the most relevant time in the user's journey, and will save you and them extra steps down the line.
-
-#### Frontend
-
-On your frontend, you might have a component that handles the sign up flow, like `<SignUp />`.
-Let's say the path to this component is `app/components/SignUp.js`.
-
-```javascript
-const signUp = async (formData) => {
-  try {
-    // Your sign up logic...
-
-    // Add function to create a Buybase user.
-    const response = await fetch("/your-api/buybase/users/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ app_id: appId }),
-    });
-  } catch (error) {
-    console.error("Error creating user:", error.response.data);
-  }
-};
-```
-
-#### API Route
-
-Let's create a NextJS API route to create a Buybase user.
-The path to the API route is `app/your-api/buybase/users/create/route.js`.
-
-```javascript
-import { NextResponse } from "next/server";
-
-export async function POST(req) {
-  try {
-    const { app_id } = await req.json();
-    const response = await fetch("https://api.buybase.ai/users/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.BUYBASE_API_KEY}`,
-      },
-      body: JSON.stringify({ app_id }),
-    });
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-    const data = await response.json();
-    const userId = data.user_id;
-    // To do: Save userId to your db...
-    return NextResponse.json({
-      success: true,
-      message: "Buybase user created successfully!",
-      user_id: userId,
-    });
-  } catch (error) {
-    console.error("Error creating Buybase user:", error);
-    return NextResponse.json({
-      success: false,
-      message: "Error creating Buybase user.",
-    });
-  }
-}
-```
-
-## Search a Shopify Store
-
-Now that we have a Buybase user for our Buybase project, let's move onto searching a Shopify store's product catalog using natural language.
-The Buybase `search` endpoint is powerful, allowing you to get conversational and abstract about what you want to buy, and even include price filters to narrow down your search based on a budget.
-
-See the [API Reference](/api-reference/search/get) for more information.
-
-### Setup a Search Tool
-
-If our goal is to search for a product using natural language, we're going to need an LLM to listen to what the user is saying, and then generate a query that describes what they're requesting.
-We can do this using OpenAI's function calling capabilities by creating a tool which calls the Buybase `/search` endpoint.
-
-Read more about [Function Calling](https://platform.openai.com/docs/guides/function-calling) in the OpenAI docs.
-
-#### Tool Schema
-
-Let's define the schema for our search tool using JSON. This describes the parameters that the LLM will use to generate a response from the Buybase `/search` endpoint.
-
-```javascript
-const tools = [
-      {
-        type: "function",
-        function: {
-          name: "search_tool",
-          description:
-            "Call this tool when the user says they want a specific product or have a general description of what they're looking for.",
-          parameters: {
-            type: "object",
-            properties: {
-              q: {
-                type: "string",
-                description: "A description of what the user is looking for.",
-              },
-              price_min: {
-                type: "integer",
-                description:
-                  "Minimum price specified by the user. Do not include if user does not explicitly mention a price.",
-              },
-              price_max: {
-                type: "integer",
-                description:
-                  "Maximum price specified by the user. Do not include if user does not explicitly mention a price.",
-              },
-            },
-            required: ["q"],
-          },
-        },
-      },
-    ];
-```
-
-#### Tool Implementation
-
-OpenAI's ecosystem supports tools for their `Completions API` and their `Assistants API`.
-For this example, we'll be using a chat completion function.
-
-```javascript
-const completion = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [
-    {
-      role: "system",
-      content: "You are a helpful shopping assistant. When users ask about products, use the search_tool function to find relevant items. Otherwise, chat with the user to understand their shopping needs.",
-    },
-    {
-      role: "user",
-      content:
-        "I'm looking for a pair of shoes for an upcoming trip to the Caribbean.",
-    },
-    { role: "assistant", content: "Do you have a budget in mind?" },
-    { role: "user", content: "Yeah, I'm looking to spend around $100." },
-  ],
-  tools: tools,
-});
-```
-
-This would generate a response from the LLM that includes a function call to the `search_tool` function.
-
-```json
-[
-  {
-    "id": "call_12345xyz",
-    "type": "function",
-    "function": {
-      "name": "search_tool",
-      "arguments": "{'q':'A pair of shoes for an upcoming trip to the Caribbean', 'price_min':50, 'price_max':100}"
-    }
-  }
-]
-```
-
-### Display Search Results
-
-Since this is a conversational shopping experience, our frontend needs a way to display a log of the conversation history between the user and the assistant. When we receive a tool call, we'll want to display the search results in the conversation history.
-You might setup a `<Conversation />` component that looks something like this:
-
-#### Frontend
-
-<Tabs>
-  <Tab title="Conversation.jsx">
-    ```jsx
-    "use client";
-    import React, { useState } from "react";
-    import { useForm } from "react-hook-form";
-    import SearchResults from "./components/SearchResults";
-    import axios from "axios";
-
-    function Conversation() {
-      const [loading, setLoading] = useState(false);
-      const [messages, setMessages] = useState([]);
-
-      // Initialize react-hook-form
-      const { register, handleSubmit, reset } = useForm();
-
-      const handleUserMessage = async (data) => {
-        // Reset the input field
-        reset();
-        // Set loading to true
-        setLoading(true);
-        // Append user message to conversation
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { role: "user", content: data.userMessage },
-        ]);
-        // Function makes API call to OpenAI for chat completion.
-        const response = await axios.post("/your-api/openai/completion", {
-          messages: [...messages, { role: "user", content: data.userMessage }],
-        });
-        // Check for tool call and fetch search results if search_tool is present.
-        if (
-          response.data.tool_calls &&
-          response.data.tool_calls[0].function.name === "search_tool"
-        ) {
-          console.log("Search tool call detected...");
-          const toolCall = response.data.tool_calls[0];
-          const { q, price_min, price_max } = JSON.parse(
-            toolCall.function.arguments
-          );
-          try {
-            const searchResponse = await axios.post("/your-api/buybase/search", {
-              q,
-              price_min,
-              price_max,
-              store_id: process.env.NEXT_PUBLIC_BUYBASE_STORE_ID,
-              user_id: "user_k9180u5x2k612zi6",
-            });
-            setLoading(false);
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              {
-                role: "assistant",
-                content: "Here are some products I found for you:",
-                searchResults: searchResponse.data,
-              },
-            ]);
-          } catch (error) {
-            setLoading(false);
-            console.error("Error fetching search results:", error);
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              {
-                role: "assistant",
-                content:
-                  "Sorry, I encountered an error while searching for products.",
-              },
-            ]);
-          }
-        } else {
-          setLoading(false);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { role: "assistant", content: response.data.content },
-          ]);
-        }
-      };
-
-      return (
-        <div>
-          {messages.map((msg, index) => (
-            <div key={index} className={`message ${msg.role}`}>
-              {msg.content}
-              {msg.searchResults && <SearchResults products={msg.searchResults} />}
-            </div>
-          ))}
-          {loading && <div>Loading...</div>}
-          <form onSubmit={handleSubmit(handleUserMessage)}>
-            <input
-              type="text"
-              placeholder="Type a message..."
-              {...register("userMessage", { required: true })}
-            />
-            <button type="submit">Send</button>
-          </form>
-        </div>
-      );
-    }
-
-    export default Conversation;
-    ```
-  </Tab>
-
-  <Tab title="SearchResults.jsx">
-    ```jsx
-    "use client";
-    import React, { useState } from "react";
-    import BuyNowModal from "./BuyNow";
-
-    function SearchResults({ products }) {
-      const [activeProduct, setActiveProduct] = useState(null);
-      const [isBuyNowModalOpen, setIsBuyNowModalOpen] = useState(false);
-
-      const handleOpenModal = (productIndex) => {
-        const selectedProduct = products[productIndex];
-        setActiveProduct(selectedProduct);
-        setIsBuyNowModalOpen(true);
-      };
-
-      return (
-        <>
-          <div className="flex flex-row gap-4 w-screen overflow-x-scroll">
-            {/* Product Results */}
-            {products?.length === 0 && <p>No products found</p>}
-            {products?.map((product, productIndex) => (
-              <div
-                key={product.id}
-                className="flex flex-col gap-4 w-[300px] flex-shrink-0 items-start"
-              >
-                <img
-                  src={product.images[0]?.src}
-                  alt="product image"
-                  style={{ width: "100%", height: "400px", objectFit: "cover" }}
-                />
-                <h3>{product.title}</h3>
-                <p>{product.variants[0]?.price}</p>
-                <p>{product.reason}</p>
-                <button
-                  onClick={() => handleOpenModal(productIndex)}
-                  className="bg-black text-white px-4 py-2 w-full"
-                >
-                  Buy Now
-                </button>
-              </div>
-            ))}
-            {/* Buy Now Modal */}
-            {isBuyNowModalOpen && activeProduct !== null && (
-              <BuyNowModal
-                selectedProduct={activeProduct}
-                setIsBuyNowModalOpen={setIsBuyNowModalOpen}
-              />
-            )}
-          </div>
-        </>
-      );
-    }
-
-    export default SearchResults;
-    ```
-  </Tab>
-</Tabs>
-
-#### API Route
-
-Let's create a NextJS API route to handle the search request.
-The path to the API route is `app/your-api/buybase/search/route.js`.
-
-```javascript
-import { NextResponse } from "next/server";
-
-export async function POST(req) {
-  const { q, price_min, price_max } = await req.json();
-  const response = await fetch("https://api.buybase.ai/search", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.BUYBASE_API_KEY}`,
-    },
-    body: JSON.stringify({ q, price_min, price_max }),
-  });
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
-  const data = await response.json();
-  return NextResponse.json(data);
-}
-```
-
-## Buy Products
-
-With our conversation UI and search results display in place, let's implement the purchasing functionality. The SearchResults.jsx component above provides the foundation - now we need to create a component that displays detailed product information and enables one-click purchasing.
-
-#### Frontend
-
-```jsx
-"use client";
-import axios from "axios";
-import { useState } from "react";
-
-function BuyNowModal({ selectedProduct, setIsBuyNowModalOpen }) {
-  const [selectedVariantTitle, setSelectedVariantTitle] = useState("");
-  const [selectedVariantId, setSelectedVariantId] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-
-  const handleBuyNow = async () => {
-    const response = await axios.post("/your-api/buybase/buy", {
-      items: [
-        {
-          variant_id: String(selectedVariantId),
-          quantity: quantity,
-        },
-      ],
-      store_id: process.env.NEXT_PUBLIC_BUYBASE_STORE_ID,
-      user_id: "user_k9180u5x2k612zi6",
-    });
-    if (response?.status === 200) {
-      setIsBuyNowModalOpen(false);
-    } else {
-      console.error(response);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
-      <div className="bg-white w-screen h-1/2 fixed bottom-0 left-0 p-5">
-        <div className="flex flex-col gap-3">
-          <span className="close" onClick={() => setIsBuyNowModalOpen(false)}>
-            &times;
-          </span>
-          <h3 className="text-xl font-bold">{selectedProduct.title}</h3>
-          <p>{selectedProduct.description}</p>
-          <form>
-            {selectedProduct.variants.length > 1 &&
-              selectedProduct.options.map((option, optionIndex) => (
-                <div key={option.name}>
-                  <label htmlFor={`${selectedProduct.id}-${option.name}`}>
-                    {option.name}:
-                  </label>
-                  <select
-                    id={`${selectedProduct.id}-${option.name}`}
-                    onChange={(e) => {
-                      console.log(e.target.value);
-                      const titleParts = selectedVariantTitle.split("/");
-                      titleParts[optionIndex] = e.target.value;
-                      setSelectedVariantTitle(titleParts.join("/ "));
-                      setSelectedVariantId(
-                        selectedProduct.variants.find(
-                          (variant) => variant.title === selectedVariantTitle
-                        )?.id
-                      );
-                    }}
-                  >
-                    {option.values.map((value, valueIndex) => (
-                      <option key={valueIndex} value={value}>
-                        {value}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ))}
-          </form>
-          <div>
-            <p onClick={() => setQuantity(quantity + 1)}>+</p>
-            <p>{quantity}</p>
-            <p onClick={() => quantity > 1 && setQuantity(quantity - 1)}>-</p>
-          </div>
-          <button onClick={handleBuyNow}>Buy Now</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default BuyNowModal;
-```
-
-#### API Route
-
-Let's create a NextJS API route to handle the buy request.
-The path to the API route is `app/your-api/buybase/buy/route.js`.
-
-```javascript
-import { NextResponse } from "next/server";
-import axios from "axios";
-
-export async function POST(req) {
-  const { items, store_id, user_id } = await req.json();
-  console.log("Items:", items);
-  try {
-    const response = await axios.post(
-      `https://api.buybase.ai/buy`,
-      {
-        items,
-        store_id,
-        user_id,
-      },
-      {
+1. Create a profile for your Buybase app.
+2. Add style preferences.
+3. Attach shipping details.
+4. Perform personalized product searches.
+
+
+<Steps>
+<Step title="Grab your API key">
+  <p>
+    Go to the [Buybase Developer Dashboard](https://devs.buybase.ai) and grab your API key.
+  </p>
+</Step>
+
+<Step title="Create a Profile">
+    Profiles store user preferences and shipping details for personalized experiences.
+
+    ```javascript
+    const axios = require('axios');
+
+    async function createProfile() {
+      const response = await axios.post('https://api.buybase.ai/profiles/create', {}, {
         headers: {
-          Authorization: `Bearer ${process.env.BUYBASE_API_KEY}`,
+          'Authorization': `Bearer ${process.env.BUYBASE_API_KEY}`,
+          'Content-Type': 'application/json',
         },
-      }
-    );
-    console.log("Response:", response.data);
-    return NextResponse.json({ success: true, data: response.data }, { status: 200 });
-  } catch (error) {
-    console.error("Error creating checkout:", error);
-    return NextResponse.json({ success: false, error: error.response.data }, { status: 500 });
-  }
-}
-```
+      });
+
+      console.log('Profile ID:', response.data.profile.id);
+      return response.data.profile.id;
+    }
+
+    // Usage
+    createProfile().catch(console.error);
+    ```
+  </Step>
+
+  <Step title="Add Style Preferences">
+    Attach style preferences to enhance product recommendations.
+
+    ```javascript
+    async function createStyleProfile(profileId, styleDescription) {
+      const response = await axios.post('https://api.buybase.ai/styles/create', {
+        profile_id: profileId,
+        text: styleDescription,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.BUYBASE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Style ID:', response.data.style.id);
+      return response.data.style.id;
+    }
+
+    // Usage
+    createStyleProfile('prof_12345', 'Minimalist casual, neutral colors').catch(console.error);
+    ```
+  </Step>
+
+  <Step title="Add Shipping Details">
+    Store shipping info to streamline checkout.
+
+    ```javascript
+    async function createShippingAddress(profileId, shippingDetails) {
+      const response = await axios.post('https://api.buybase.ai/shipping/create', {
+        profile_id: profileId,
+        shipping_address: shippingDetails,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.BUYBASE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Shipping ID:', response.data.shipping.id);
+      return response.data.shipping.id;
+    }
+
+    // Usage
+    createShippingAddress('prof_12345', {
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john.doe@example.com',
+      phone: '+1234567890',
+      address_1: '123 Main St',
+      address_2: 'Apt 4B',
+      city: 'San Francisco',
+      country_code: 'US',
+      province_code: 'CA',
+      postal_code: '94105',
+    }).catch(console.error);
+    ```
+  </Step>
+
+  <Step title="Search for Products with Profile">
+    Use natural language and personalization to search products.
+
+    ```javascript
+    async function searchProducts(profileId, query) {
+      const response = await axios.post('https://api.buybase.ai/search/products', {
+        profile_id: profileId,
+        query: { text: query },
+        query_weight: 0.7,
+        style_weight: 0.3,
+        similarity_threshold: 0.25,
+        result_count: 2,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.BUYBASE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      response.data.results.forEach(product => {
+        console.log(`${product.title}: $${product.variants[0].price}`);
+        console.log(`Checkout URL: ${product.variants[0].checkout_url_with_shipping}`);
+      });
+    }
+
+    // Usage
+    searchProducts('prof_12345', 'Comfortable city walking shoes').catch(console.error);
+    ```
+  </Step>
+</Steps>
+
+Explore more in the [API Reference](https://buybase.ai/docs).

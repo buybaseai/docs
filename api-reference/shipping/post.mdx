@@ -1,0 +1,106 @@
+---
+title: "Create"
+description: 'Create a shipping address and attach it to a profile.'
+api: "POST /shipping/create"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="shipping_address" type="object" required>
+  <Expandable title="Shipping Address Object">
+    <ParamField body="first_name" type="string" required>
+      First name of the recipient.
+    </ParamField>
+    <ParamField body="last_name" type="string" required>
+      Last name of the recipient.
+    </ParamField>
+    <ParamField body="email" type="string" required>
+      Email address of the recipient.
+    </ParamField>
+    <ParamField body="phone" type="string" required>
+      Phone number of the recipient.
+    </ParamField>
+    <ParamField body="address_1" type="string" required>
+      Primary address line.
+    </ParamField>
+    <ParamField body="address_2" type="string">
+      Secondary address line (optional).
+    </ParamField>
+    <ParamField body="city" type="string" required>
+      City name.
+    </ParamField>
+    <ParamField body="country_code" type="string" required>
+      Country code (e.g., US, CA).
+    </ParamField>
+    <ParamField body="province_code" type="string" required>
+      Province or state code.
+    </ParamField>
+    <ParamField body="postal_code" type="string" required>
+      Postal or ZIP code.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+
+<ParamField body="profile_id" type="string" required>
+  The ID of the profile to attach this shipping address to.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="shipping" type="object">
+  The created shipping address object.
+</ResponseField>
+
+<ResponseField name="attached_profile_id" type="string">
+  The ID of the profile this shipping address is attached to.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `SHIPPING_CREATED`: Shipping address created successfully
+  * `SHIPPING_CREATION_FAILED`: Failed to create shipping address
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<Note>
+  Shipping addresses are used for order fulfillment. Ensure all required fields are provided with accurate information.
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "shipping": {
+      "id": "ship_12345",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "phone": "+1234567890",
+      "address_1": "123 Main St",
+      "address_2": "Apt 4B",
+      "city": "New York",
+      "country_code": "US",
+      "province_code": "NY",
+      "postal_code": "10001",
+      "profile_id": "prof_67890",
+      "created_at": "2023-09-15T14:22:31Z"
+    },
+    "attached_profile_id": "prof_67890",
+    "code": "SHIPPING_CREATED"
+  }
+  ```
+</ResponseExample>

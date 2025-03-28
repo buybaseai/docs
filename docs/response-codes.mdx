@@ -1,39 +1,58 @@
 ---
 title: Response Codes
-description: 'Buybase response codes.'
-icon: "server"
+description: "Buybase response codes."
+icon: "terminal"
 ---
 
 Below are the response codes used in the API:
 
+## Success Codes (200-204)
+
 - **200 OK**
-  - `PURCHASE_SUCCESS`: Purchase successful
+
   - `SEARCH_SUCCESS`: Search completed successfully
-  - `USER_RESPONSE`: User data retrieved successfully
-  - `USER_DELETED`: User deleted successfully
-  - `USER_CREATED`: User created successfully
-  - `BUYBASE_LINK`: Buybase link created successfully
-  - `APP_RESPONSE`: App data retrieved successfully
-  - `STORE_RESPONSE`: Store details retrieved successfully
-  - `ORDER_CREATED`: Order created successfully
+  - `STYLE_CREATED`: Style profile created successfully
+  - `STYLE_UPDATED`: Style profile updated successfully
+  - `STYLE_RETRIEVED`: Style profile retrieved successfully
+  - `STYLE_DELETED`: Style profile deleted successfully
+  - `PROFILE_CREATED`: User profile created successfully
+  - `PROFILE_RETRIEVED`: User profile retrieved successfully
+  - `PROFILE_DELETED`: User profile deleted successfully
+  - `SHIPPING_CREATED`: Shipping address created successfully
+  - `SHIPPING_UPDATED`: Shipping address updated successfully
+  - `SHIPPING_RETRIEVED`: Shipping address retrieved successfully
+  - `SHIPPING_DELETED`: Shipping address deleted successfully
+
+- **204 No Content**
+  - `NO_RESULTS_FOUND`: Search completed but no results found
+
+## Client Error Codes (400-404)
 
 - **400 Bad Request**
-  - `BAD_REQUEST_ERROR`: Invalid request parameters
-  - `DEVELOPER_NOT_FOUND`: Developer not found
-  - `APP_NOT_FOUND`: App not found
-  - `USER_NOT_FOUND`: User not found
-  - `PAYMENT_METHOD_NOT_FOUND`: Payment method not found
-  - `SESSION_NOT_FOUND`: Session not found
-  - `EXPIRED_SESSION`: Session expired
-  - `INSUFFICIENT_STOCK`: Insufficient stock
-  - `STORE_NOT_FOUND`: Store ID not found
 
-- **401 Unauthorized**
-  - `AUTH_MISSING`: No API key provided
-  - `INVALID_KEY`: Invalid API key
+  - `INVALID_REQUEST`: Invalid request parameters
 
 - **403 Forbidden**
-  - `FORBIDDEN`: Not authorized to access store
+
+  - `FORBIDDEN_FEATURE`: The feature is not available on your current plan.
+
+- **401 Unauthorized**
+
+  - `UNAUTHORIZED`: No authorization header provided
+  - `INVALID_API_KEY`: The API key provided is invalid
+
+- **404 Not Found**
+
+  - `STORE_NOT_FOUND`: Could not find store with specified ID or brand name
+  - `PROFILE_NOT_FOUND`: Could not find profile with specified ID
+  - `STYLE_NOT_FOUND`: Style not found
+  - `SHIPPING_NOT_FOUND`: Shipping address not found
+
+- **409 Conflict**
+  - `SHIPPING_ADDRESS_EXISTS`: Shipping address already exists for this profile
+  - `STYLE_EXISTS`: Style already exists for this profile
+
+## Server Error Codes (500-503)
 
 - **500 Internal Server Error**
   - `INTERNAL_ERROR`: An error occurred during processing

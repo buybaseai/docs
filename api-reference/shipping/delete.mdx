@@ -1,0 +1,51 @@
+---
+title: "Delete"
+description: 'Delete a shipping address.'
+api: "DELETE /shipping-addresses/{id}"
+---
+
+### Headers
+
+<ParamField header="authorization" type="string" required>
+  Your API key for authorization.
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The ID of the shipping address to delete.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A message confirming the deletion.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  A code indicating the result of the operation. Possible values:
+  * `SHIPPING_DELETED`: Shipping address deleted successfully
+  * `SHIPPING_DELETE_FAILED`: Failed to delete shipping address
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the request fails.
+</ResponseField>
+
+<Note>
+  Deleting a shipping address is permanent and cannot be undone. Make sure you have the correct shipping ID before proceeding.
+</Note>
+
+<ResponseExample>
+  ```json Response
+  {
+    "success": true,
+    "message": "Shipping address \"ship_12345\" deleted successfully",
+    "code": "SHIPPING_DELETED"
+  }
+  ```
+</ResponseExample>
