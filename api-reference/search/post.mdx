@@ -52,8 +52,8 @@ api: "POST /search/products"
   Minimum similarity threshold for matching products (0-1).
 </ParamField>
 
-<ParamField body="result_count" type="integer" default="2">
-  Number of results to return. Maximum depends on your plan.
+<ParamField body="max_result_count" type="integer" default="2">
+  Maximum number of results to return.
 </ParamField>
 
 <ParamField body="exclude_variant_ids" type="array">
@@ -158,24 +158,6 @@ api: "POST /search/products"
 <ResponseField name="message" type="string">
   Additional details about the error if the request fails.
 </ResponseField>
-
-### Plan Limitations
-
-<Note>
-  Feature availability varies by plan:
-
-  **Free Plan**:
-  - No image search
-  - Limited result count
-
-  **Growth Plan**:
-  - No image search
-  - Increased result count
-
-  **Pro Plan**:
-  - Image search available
-  - Higher result count limit
-</Note>
 
 <ResponseExample>
   ```json Response
