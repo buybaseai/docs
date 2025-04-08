@@ -110,7 +110,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://devs.buybase.ai"
+      "href": "https://dashboard.buybase.ai"
     }
   },
   "footer": {
